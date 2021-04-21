@@ -16,11 +16,17 @@ npm install derhuerst/generate-herrenberg-gtfs-flex
 
 ```shell
 Usage:
-    generate-locations-geojson todo
-Options:
-	todo
+    generate-locations-geojson <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
 Examples:
-	todo
+    generate-locations-geojson lib/rufbusse.js \
+        gtfs/{routes,trips,stops,stop_times}.txt >gtfs/locations.geojson
+```
+
+```shell
+Usage:
+    gen-booking-rules-txt <path-to-booking-rules>
+Examples:
+	gen-booking-rules-txt lib/booking-rules.js >gtfs/booking_rules.txt
 ```
 
 
