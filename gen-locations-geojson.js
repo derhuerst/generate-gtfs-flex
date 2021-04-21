@@ -42,32 +42,26 @@ const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
 
 // todo: make this an argument
-const herrenberg = {
-	idPrefix: 'herrenberg-300', // prefix for locations.geojson IDs
-	pickup_type: pickupTypes.MUST_PHONE_AGENCY,
-	drop_off_type: dropOffTypes.MUST_COORDINATE_WITH_DRIVER,
-	booking_type: bookingTypes.SAME_DAY,
+const herrenbergCitybus = {
 	radius: .3, // in km, for the generated location area
-	prior_notice_duration_min: 30,
-	phone_number: '+49 7032 92029',
-	message: `\
-- Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle.
-- Aufpreis 0,80€ direkt an den Taxi Fahrer`,
-	info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
+	bookingRule: {
+		booking_rule_id: 'herrenberg-citybus',
+		pickup_type: pickupTypes.MUST_PHONE_AGENCY,
+		drop_off_type: dropOffTypes.MUST_COORDINATE_WITH_DRIVER,
+		booking_type: bookingTypes.SAME_DAY,
+		prior_notice_duration_min: 30,
+		phone_number: '+49 7032 92029',
+		message: `\
+	- Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle.
+	- Aufpreis 0,80€ direkt an den Taxi Fahrer`,
+		info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
+	},
 }
 const rufbusse = new Map([
-	['RT779', {
-		...herrenberg,
-	}],
-	['RT780', {
-		...herrenberg,
-	}],
-	['RT782', {
-		...herrenberg,
-	}],
-	['RT783', {
-		...herrenberg,
-	}],
+	['RT779', herrenbergCitybus],
+	['RT780', herrenbergCitybus],
+	['RT782', herrenbergCitybus],
+	['RT783', herrenbergCitybus],
 	// todo: more lines
 ])
 
@@ -82,21 +76,24 @@ if (!files.stops) showError('Missing stops.txt file.')
 if (!files['stop_times']) showError('Missing stop_times.txt file.')
 
 ;(async () => {
-
-	const byRouteId = new Map() // route_id -> locSpec
+	const byRouteId = new Map() // route_id -> rufbus spec
 	for await (const r of readCsv(files.routes)) {
 		if (rufbusse.has(r.route_short_name)) {
-			const locSpec = rufbusse.get(r.route_short_name)
-			byRouteId.set(r.route_id, locSpec)
+			const spec = rufbusse.get(r.route_short_name)
+			byRouteId.set(r.route_id, spec)
 		}
 	}
 
 	const byTripId = new Map()
 	for await (const t of readCsv(files.trips)) {
 		if (byRouteId.has(t.route_id)) {
-			const locSpec = byRouteId.get(t.route_id)
+			const {
+				bookingRule,
+				radius,
+			} = byRouteId.get(t.route_id)
 			byTripId.set(t.trip_id, {
-				locSpec,
+				bookingRule,
+				radius,
 				stops: new Set(),
 			})
 		}
@@ -128,10 +125,15 @@ if (!files['stop_times']) showError('Missing stop_times.txt file.')
 	}
 	const printedLocs = new Set()
 
-	for (const [trip_id, {locSpec, stops}] of byTripId) {
+	for (const [trip_id, spec] of byTripId) {
+		const {
+			bookingRule,
+			radius,
+			stops,
+		} = spec
 		for (const s of stops) {
 			const locId = [
-				locSpec.idPrefix,
+				bookingRule.booking_rule_id,
 				s.stop_id,
 			].join('-')
 			if (printedLocs.has(locId)) continue
@@ -144,7 +146,7 @@ if (!files['stop_times']) showError('Missing stop_times.txt file.')
 			printLoc({
 				id: locId, // todo: why not insde `properties`? double-check spec again
 				...truncate(
-					circle([s.stop_lon, s.stop_lat], locSpec.radius, {steps: 32, properties}),
+					circle([s.stop_lon, s.stop_lat], radius, {steps: 32, properties}),
 					{precision: 5, mutate: true},
 				),
 			})
