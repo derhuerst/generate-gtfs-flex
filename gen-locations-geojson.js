@@ -37,6 +37,7 @@ const {basename, extname} = require('path')
 const pickupTypes = require('gtfs-utils/pickup-types')
 const dropOffTypes = require('gtfs-utils/drop-off-types')
 const bookingTypes = require('gtfs-utils/booking-types')
+const {Stringifier} = require('csv-stringify')
 const readCsv = require('gtfs-utils/read-csv')
 const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
@@ -76,6 +77,32 @@ if (!files.stops) showError('Missing stops.txt file.')
 if (!files['stop_times']) showError('Missing stop_times.txt file.')
 
 ;(async () => {
+	const bookingRules = new Map()
+	for (const [_, {bookingRule: br}] of rufbusse) {
+		bookingRules.set(br.booking_rule_id, br)
+	}
+
+	// todo: this doesn't escape multiline values, is that correct?
+	const csv = new Stringifier({quoted: true})
+	const printCsv = (row) => {
+		process.stdout.write(csv.stringify(row) + '\n')
+	}
+
+	const fields = new Set()
+	for (const [_, br] of bookingRules) {
+		for (const k of Object.keys(br)) fields.add(k)
+	}
+	printCsv(Array.from(fields.values())) // header
+
+	for (const [_, br] of bookingRules) {
+		const row = []
+		let i = 0
+		for (const field of fields) {
+			row[i++] = br[field]
+		}
+		printCsv(row)
+	}
+
 	const byRouteId = new Map() // route_id -> rufbus spec
 	for await (const r of readCsv(files.routes)) {
 		if (rufbusse.has(r.route_short_name)) {
