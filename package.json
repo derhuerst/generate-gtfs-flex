@@ -1,0 +1,33 @@
+{
+	"private": true,
+	"name": "generate-herrenberg-gtfs-flex",
+	"description": "Generate GTFS Flex for Herrenberg on-demand public transport service.",
+	"version": "1.0.0",
+	"bin": {
+		"generate-locations-geojson": "gen-locations-geojson.js"
+	},
+	"keywords": [
+		"public transport",
+		"transit",
+		"gtfs",
+		"gtfs-flex"
+	],
+	"author": "Jannis R <mail@jannisr.de>",
+	"homepage": "https://github.com/derhuerst/generate-herrenberg-gtfs-flex",
+	"repository": "derhuerst/generate-herrenberg-gtfs-flex",
+	"bugs": "https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues",
+	"license": "ISC",
+	"engines": {
+		"node": ">=14"
+	},
+	"dependencies": {
+		"mri": "^1.1.6"
+	},
+	"devDependencies": {
+		"eslint": "^7.9.0"
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"prepublishOnly": "npm run lint"
+	}
+}
