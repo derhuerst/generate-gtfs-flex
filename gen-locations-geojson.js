@@ -32,57 +32,36 @@ const showError = (err) => {
 	process.exit(1)
 }
 
-const {join, basename, extname} = require('path')
-const readCsv = require('gtfs-utils/read-csv')
+const {join} = require('path')
 const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
+const createReadGtfsFile = require('./lib/read-gtfs-files')
+const computeBookingRulesByTripId = require('./lib/booking-rules-by-trip-id')
 
 const pathToRufbusse = argv._[0]
-if (!pathToRufbusse) {
-	showError('Missing path-to-booking-rules.')
-}
+if (!pathToRufbusse) showError('Missing path-to-rufbusse.')
 const rufbusse = require(join(process.cwd(), pathToRufbusse))
 
-const gtfs = new Map()
-for (const path of argv._) {
-	const name = basename(path, extname(path))
-	gtfs[name] = path
-}
-if (!gtfs.routes) showError('Missing routes.txt file.')
-if (!gtfs.trips) showError('Missing trips.txt file.')
-if (!gtfs.stops) showError('Missing stops.txt file.')
-if (!gtfs['stop_times']) showError('Missing stop_times.txt file.')
+const requiredGtfsFiles = [
+	'routes',
+	'trips',
+	'stops',
+	'stop_times',
+]
+const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 ;(async () => {
-	const byRouteId = new Map() // route_id -> rufbus spec
-	for await (const r of readCsv(gtfs.routes)) {
-		if (rufbusse.has(r.route_short_name)) {
-			const spec = rufbusse.get(r.route_short_name)
-			byRouteId.set(r.route_id, spec)
-		}
-	}
-
-	const byTripId = new Map()
-	for await (const t of readCsv(gtfs.trips)) {
-		if (byRouteId.has(t.route_id)) {
-			const {
-				bookingRule,
-				radius,
-			} = byRouteId.get(t.route_id)
-			byTripId.set(t.trip_id, {
-				bookingRule,
-				radius,
-				stops: new Set(),
-			})
-		}
+	const byTripId = await computeBookingRulesByTripId(rufbusse, readGtfsFile)
+	for (const spec of byTripId.values()) {
+		spec.stops = new Set()
 	}
 
 	const allStops = new Map()
-	for await (const s of readCsv(gtfs.stops)) {
+	for await (const s of readGtfsFile('stops')) {
 		allStops.set(s.stop_id, s)
 	}
 
-	for await (const st of readCsv(gtfs['stop_times'])) {
+	for await (const st of readGtfsFile('stop_times')) {
 		if (!byTripId.has(st.trip_id)) continue
 		if (!allStops.has(st.stop_id)) continue
 
