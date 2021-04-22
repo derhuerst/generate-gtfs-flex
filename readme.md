@@ -29,6 +29,14 @@ Examples:
 	gen-booking-rules-txt lib/booking-rules.js >gtfs/booking_rules.txt
 ```
 
+```shell
+Usage:
+    patch-stop-times-txt <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+Examples:
+    patch-stop-times-txt lib/rufbusse.js \
+        gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
+```
+
 
 ## Contributing
 

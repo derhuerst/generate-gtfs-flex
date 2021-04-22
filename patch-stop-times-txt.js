@@ -1,10 +1,56 @@
 #!/usr/bin/env node
 'use strict'
 
+const mri = require('mri')
+const pkg = require('./package.json')
+
+const argv = mri(process.argv.slice(2), {
+	boolean: [
+		'help', 'h',
+		'version', 'v',
+	]
+})
+
+if (argv.help || argv.h) {
+	process.stdout.write(`
+Usage:
+    patch-stop-times-txt <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+Examples:
+    patch-stop-times-txt lib/rufbusse.js \\
+        gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
+\n`)
+	process.exit(0)
+}
+
+if (argv.version || argv.v) {
+	process.stdout.write(`${pkg.name} v${pkg.version}\n`)
+	process.exit(0)
+}
+
+const showError = (err) => {
+	console.error(err)
+	process.exit(1)
+}
+
+const {join} = require('path')
 const assert = require('assert')
 const pickupTypes = require('gtfs-utils/pickup-types')
 const dropOffTypes = require('gtfs-utils/drop-off-types')
+const {Stringifier} = require('csv-stringify')
+const createReadGtfsFile = require('./lib/read-gtfs-files')
 const addSeconds = require('./lib/add-seconds')
+const computeBookingRulesByTripId = require('./lib/booking-rules-by-trip-id')
+
+const pathToRufbusse = argv._[0]
+if (!pathToRufbusse) showError('Missing path-to-rufbusse.')
+const rufbusse = require(join(process.cwd(), pathToRufbusse))
+
+const requiredGtfsFiles = [
+	'routes',
+	'trips',
+	'stop_times',
+]
+const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 const timepointTypes = { // todo: move to gtfs-utils
 	APPROXIMATE: 0,
@@ -91,4 +137,35 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 	st.drop_off_booking_rule_id = bookingRule.booking_rule_id
 }
 
-// todo
+;(async () => {
+	const byTripId = await computeBookingRulesByTripId(rufbusse, readGtfsFile)
+
+	const csv = new Stringifier({quoted: true})
+	let first = true
+	const printCsv = (row) => {
+		// todo: this assumes that row's fields are always in the same order
+		if (first) {
+			first = false
+			process.stdout.write(csv.stringify(Object.keys(row)) + '\n')
+		}
+		process.stdout.write(csv.stringify(Object.values(row)) + '\n')
+	}
+
+	for await (const st of readGtfsFile('stop_times')) {
+		// Assume non-on-demand case first.
+		st.pickup_booking_rule_id = null
+		st.drop_off_booking_rule_id = null
+		st.start_pickup_dropoff_window = null
+		st.end_pickup_dropoff_window = null
+		st.timepoint = timepointTypes.EXACT
+
+		if (byTripId.has(st.trip_id)) {
+			// On-demand case, modify `st` accordingly.
+			const spec = byTripId.get(st.trip_id)
+			patchStopTime(st, spec)
+		}
+
+		printCsv(st)
+	}
+})()
+.catch(showError)
