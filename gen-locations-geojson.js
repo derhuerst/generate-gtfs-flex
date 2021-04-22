@@ -84,13 +84,13 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 	for (const [trip_id, spec] of byTripId) {
 		const {
-			bookingRule,
+			id: specId,
 			radius,
 			stops,
 		} = spec
 		for (const s of stops) {
-			const locId = [
-				bookingRule.booking_rule_id,
+			const locId = [ // todo: DRY with patch-stop-times-txt.js
+				specId,
 				s.stop_id,
 			].join('-')
 			if (printedLocs.has(locId)) continue

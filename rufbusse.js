@@ -5,6 +5,7 @@ const dropOffTypes = require('gtfs-utils/drop-off-types')
 const bookingTypes = require('gtfs-utils/booking-types')
 
 const herrenbergCitybus = {
+	id: 'herrenberg-citybus-300m',
 	radius: .3, // in km, for the generated location area
 	pickup_type: pickupTypes.MUST_PHONE_AGENCY,
 	drop_off_type: dropOffTypes.MUST_COORDINATE_WITH_DRIVER,
@@ -23,6 +24,7 @@ Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle. Aufpreis 0,
 
 const regionalbus = {
 	// todo: is 300m correct?
+	id: 'regionalbus-300m',
 	radius: .3, // in km, for the generated location area
 	pickup_type: pickupTypes.MUST_PHONE_AGENCY,
 	drop_off_type: dropOffTypes.MUST_COORDINATE_WITH_DRIVER,
