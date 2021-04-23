@@ -11,8 +11,8 @@ WORKDIR /app
 # for docker-entrypoint.sh
 RUN apk add --no-cache bash
 
-ADD package.json /app/
-RUN npm install --production && npm cache clean --force
+ADD package.json package-lock.json /app/
+RUN npm ci && npm cache clean --force
 
 ADD . /app
 RUN npm link
