@@ -37,6 +37,16 @@ Examples:
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 ```
 
+### with Docker
+
+You can use the [`derhuerst/generate-herrenberg-gtfs-flex` Docker image](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
+
+```shell
+docker run -v /path/to/gtfs:/gtfs --rm -it generate-herrenberg-gtfs-flex
+```
+
+**⚠️ This will overwrite the original `stop_times.txt` file.**
+
 
 ## Contributing
 
