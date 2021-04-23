@@ -32,7 +32,7 @@ const showError = (err) => {
 	process.exit(1)
 }
 
-const {join} = require('path')
+const {resolve} = require('path')
 const assert = require('assert')
 const pickupTypes = require('gtfs-utils/pickup-types')
 const dropOffTypes = require('gtfs-utils/drop-off-types')
@@ -43,7 +43,7 @@ const computeBookingRulesByTripId = require('./lib/booking-rules-by-trip-id')
 
 const pathToRufbusse = argv._[0]
 if (!pathToRufbusse) showError('Missing path-to-rufbusse.')
-const rufbusse = require(join(process.cwd(), pathToRufbusse))
+const rufbusse = require(resolve(process.cwd(), pathToRufbusse))
 
 const requiredGtfsFiles = [
 	'routes',

@@ -31,14 +31,14 @@ const showError = (err) => {
 	process.exit(1)
 }
 
-const {join} = require('path')
+const {resolve} = require('path')
 const {Stringifier} = require('csv-stringify')
 
 const pathToBookingRules = argv._[0]
 if (!pathToBookingRules) {
 	showError('Missing path-to-booking-rules.')
 }
-const bookingRules = require(join(process.cwd(), pathToBookingRules))
+const bookingRules = require(resolve(process.cwd(), pathToBookingRules))
 
 // todo: this doesn't escape multiline values, is that correct?
 const csv = new Stringifier({quoted: true})
