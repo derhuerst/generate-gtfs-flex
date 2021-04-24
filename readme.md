@@ -2,7 +2,8 @@
 
 **Generate GTFS Flex for Herrenberg on-demand public transport service.**
 
-![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)
+[![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)](license.md)
+[![Docker image build](https://img.shields.io/docker/cloud/build/derhuerst/generate-herrenberg-gtfs-flex)](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex)
 
 
 ## Installation
@@ -42,7 +43,7 @@ Examples:
 You can use the [`derhuerst/generate-herrenberg-gtfs-flex` Docker image](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
 
 ```shell
-docker run -v /path/to/gtfs:/gtfs --rm -it generate-herrenberg-gtfs-flex
+docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-flex
 ```
 
 **⚠️ This will overwrite the original `stop_times.txt` file.**
