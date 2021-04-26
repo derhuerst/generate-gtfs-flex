@@ -8,12 +8,13 @@ LABEL org.opencontainers.image.licenses="ISC"
 
 WORKDIR /app
 ENV NODE_ENV=production
+ENV npm_config_update-notifier=false
 
 # for docker-entrypoint.sh
 RUN apk add --no-cache bash moreutils
 
 ADD package.json package-lock.json /app/
-RUN npm ci && npm cache clean --force
+RUN npm install ci --only=production && npm cache clean --force
 
 ADD . /app
 RUN npm link
