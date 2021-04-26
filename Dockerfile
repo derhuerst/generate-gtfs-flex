@@ -7,9 +7,10 @@ LABEL org.opencontainers.image.source="https://github.com/derhuerst/generate-her
 LABEL org.opencontainers.image.licenses="ISC"
 
 WORKDIR /app
+ENV NODE_ENV=production
 
 # for docker-entrypoint.sh
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash moreutils
 
 ADD package.json package-lock.json /app/
 RUN npm ci && npm cache clean --force
