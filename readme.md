@@ -25,9 +25,9 @@ Examples:
 
 ```shell
 Usage:
-    gen-booking-rules-txt <path-to-booking-rules>
+    generate-booking-rules-txt <path-to-booking-rules>
 Examples:
-	gen-booking-rules-txt lib/booking-rules.js >gtfs/booking_rules.txt
+	generate-booking-rules-txt booking-rules.js >gtfs/booking_rules.txt
 ```
 
 ```shell

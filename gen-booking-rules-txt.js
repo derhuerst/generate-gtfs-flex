@@ -14,9 +14,9 @@ const argv = mri(process.argv.slice(2), {
 if (argv.help || argv.h) {
 	process.stdout.write(`
 Usage:
-    gen-booking-rules-txt <path-to-booking-rules>
+    generate-booking-rules-txt <path-to-booking-rules>
 Examples:
-	gen-booking-rules-txt lib/booking-rules.js >gtfs/booking_rules.txt
+	generate-booking-rules-txt lib/booking-rules.js >gtfs/booking_rules.txt
 \n`)
 	process.exit(0)
 }
