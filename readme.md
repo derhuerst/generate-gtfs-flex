@@ -15,9 +15,9 @@ npm install derhuerst/generate-herrenberg-gtfs-flex
 
 ## Getting started
 
-The scripts in this repo are written to be used with any GTFS feed. But there's also a file [`rufbusse.js`](rufbusse.js), which specifies the on-demand lines in [Herrenberg](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)).
+The scripts in this repo are written to be used with any GTFS feed. But there's also a file [`herrenberg-flex-rules.js`](herrenberg-flex-rules.js), which specifies the on-demand lines in [Herrenberg, Germany](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)).
 
-The following steps will demonstrate how to use the scripts with `rufbusse.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. They assume that you have installed [Node.js](https://nodejs.org/) (which includes [`npm`](https://docs.npmjs.com/cli/v7)).
+The following steps will demonstrate how to use the scripts with `herrenberg-flex-rules.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. They assume that you have installed [Node.js](https://nodejs.org/) (which includes [`npm`](https://docs.npmjs.com/cli/v7)).
 
 ```bash
 # set up dev environment
@@ -34,15 +34,15 @@ npm install derhuerst/generate-herrenberg-gtfs-flex -D
 
 # patch GTFS-Flex data into the VVS GTFS feed
 npm exec -- generate-locations-geojson \
-	node_modules/generate-herrenberg-gtfs-flex/rufbusse.js \
+	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
 npm exec -- generate-booking-rules-txt \
-	node_modules/generate-herrenberg-gtfs-flex/rufbusse.js \
+	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
 npm exec -- patch-stop-times-txt \
-	node_modules/generate-herrenberg-gtfs-flex/rufbusse.js \
+	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/stop_times.txt
 ```

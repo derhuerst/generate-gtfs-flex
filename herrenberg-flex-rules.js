@@ -55,11 +55,11 @@ const regionalbus = (origRoute) => (
 		: null
 )
 
-const rufbusseFlexRules = [
+const herrenbergFlexRules = [
 	herrenbergCitybus,
 	regionalbus,
 	// todo: more lines?
 	// todo: what about e.g. "RT77" `51-77-j21-1`? pdf fahrplan doesn't show on-demand stops
 ]
 
-module.exports = rufbusseFlexRules
+module.exports = herrenbergFlexRules
