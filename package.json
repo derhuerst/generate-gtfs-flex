@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "generate-herrenberg-gtfs-flex",
 	"description": "Generate GTFS Flex for Herrenberg on-demand public transport service.",
-	"version": "1.0.1",
+	"version": "2.0.0",
 	"bin": {
 		"generate-locations-geojson": "gen-locations-geojson.js",
 		"generate-booking-rules-txt": "gen-booking-rules-txt.js",
