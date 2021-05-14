@@ -86,6 +86,65 @@ docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-fl
 **⚠️ This will overwrite the original `stop_times.txt` file.**
 
 
+### with your own GTFS feed & GTFS-Flex rules
+
+You can use the scripts in this repo with *any* GTFS feed. As an example, we're going to patch [`sample-gtfs-feed`](https://github.com/public-transport/sample-gtfs-feed)'s `A` ("Ada Lovelace Bus Line") route to have flexible on-demand drop-offs.
+
+```shell
+mkdir sample-gtfs-feed-with-flex
+cd sample-gtfs-feed-with-flex
+npm init --yes
+npm install --save-dev sample-gtfs-feed derhuerst/generate-herrenberg-gtfs-flex
+```
+
+We're going to write a file `flex-rules.js` that exports a list of GTFS-Flex *rules*. Each of these rules is a functions that should, when given a `routes.txt` entry/row, return either `null` to leave it unchanged or return a GTFS-Flex *spec* (check out [the schema](lib/flex-spec-schema.json)) to patch it:
+
+```js
+const pickupTypes = require('gtfs-utils/pickup-types')
+const dropOffTypes = require('gtfs-utils/drop-off-types')
+const bookingTypes = require('gtfs-utils/booking-types')
+
+const adaLovelaceFlexibleDropOff = (route) => {
+	if (route.id !== 'A') return null // leave route unchanged
+	return {
+		id: 'A-flexible-drop-off', // ID of the GTFS-Flex spec
+		radius: .200, // flexible drop-off within 200m of a stop
+		pickup_type: pickupTypes.MUST_PHONE_AGENCY,
+		drop_off_type: dropOffTypes.MUST_COORDINATE_WITH_DRIVER,
+		bookingRule: {
+			// ID of the GTFS-BookingRules booking_rules.txt entry/row
+			booking_rule_id: 'flexible-drop-off',
+			booking_type: bookingTypes.SAME_DAY,
+			prior_notice_duration_min: 30,
+			message: 'Get dropped off right at home! Please call 30min before.',
+			booking_url: 'https://example.org/flex'
+		},
+	}
+}
+
+module.exports [
+	adaLovelaceFlexibleDropOff,
+]
+```
+
+We can now patch GTFS-Flex data into `sample-gtfs-feed`'s GTFS data:
+
+```shell
+# copy the GTFS feed first, so that we don't mutate node_modules
+cp -r node_modules/sample-gtfs-feed/gtfs gtfs
+
+npm exec -- generate-locations-geojson \
+	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
+	>gtfs/locations.geojson
+npm exec -- generate-booking-rules-txt \
+	flex-rules.js gtfs/routes.txt \
+	>gtfs/booking_rules.txt
+npm exec -- patch-stop-times-txt \
+	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
+	| sponge gtfs/stop_times.txt
+```
+
+
 ## Contributing
 
 If you have a question or need support using `generate-herrenberg-gtfs-flex`, please double-check your code and setup first. If you think you have found a bug or want to propose a feature, use [the issues page](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues).
