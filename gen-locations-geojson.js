@@ -14,9 +14,9 @@ const argv = mri(process.argv.slice(2), {
 if (argv.help || argv.h) {
 	process.stdout.write(`
 Usage:
-    generate-locations-geojson <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+    generate-locations-geojson <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
 Examples:
-    generate-locations-geojson lib/rufbusse.js \\
+    generate-locations-geojson flex-rules.js \\
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/locations.geojson
 \n`)
 	process.exit(0)
@@ -36,11 +36,11 @@ const {resolve} = require('path')
 const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
 const createReadGtfsFile = require('./lib/read-gtfs-files')
-const computeBookingRulesByTripId = require('./lib/booking-rules-by-trip-id')
+const computeFlexSpecsByTripId = require('./lib/flex-specs-by-trip-id')
 
-const pathToRufbusse = argv._[0]
-if (!pathToRufbusse) showError('Missing path-to-rufbusse.')
-const rufbusse = require(resolve(process.cwd(), pathToRufbusse))
+const pathToFlexRules = argv._[0]
+if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
+const flexRules = require(resolve(process.cwd(), pathToFlexRules))
 
 const requiredGtfsFiles = [
 	'routes',
@@ -51,7 +51,7 @@ const requiredGtfsFiles = [
 const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 ;(async () => {
-	const byTripId = await computeBookingRulesByTripId(rufbusse, readGtfsFile)
+	const byTripId = await computeFlexSpecsByTripId(flexRules, readGtfsFile)
 	for (const spec of byTripId.values()) {
 		spec.stops = new Set()
 	}

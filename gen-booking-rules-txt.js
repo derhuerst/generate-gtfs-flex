@@ -14,9 +14,9 @@ const argv = mri(process.argv.slice(2), {
 if (argv.help || argv.h) {
 	process.stdout.write(`
 Usage:
-    generate-booking-rules-txt <path-to-booking-rules>
+    generate-booking-rules-txt <path-to-flex-rules> <gtfs-routes>
 Examples:
-	generate-booking-rules-txt lib/booking-rules.js >gtfs/booking_rules.txt
+    generate-booking-rules-txt flex-rules.js gtfs/routes.txt >gtfs/booking_rules.txt
 \n`)
 	process.exit(0)
 }
@@ -33,12 +33,17 @@ const showError = (err) => {
 
 const {resolve} = require('path')
 const {Stringifier} = require('csv-stringify')
+const createReadGtfsFile = require('./lib/read-gtfs-files')
+const computeAllBookingRules = require('./lib/booking-rules')
 
-const pathToBookingRules = argv._[0]
-if (!pathToBookingRules) {
-	showError('Missing path-to-booking-rules.')
-}
-const bookingRules = require(resolve(process.cwd(), pathToBookingRules))
+const pathToFlexRules = argv._[0]
+if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
+const flexRules = require(resolve(process.cwd(), pathToFlexRules))
+
+const requiredGtfsFiles = [
+	'routes'
+]
+const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 // todo: this doesn't escape multiline values, is that correct?
 const csv = new Stringifier({quoted: true})
@@ -46,17 +51,22 @@ const printCsv = (row) => {
 	process.stdout.write(csv.stringify(row) + '\n')
 }
 
-const fields = new Set()
-for (const [_, br] of bookingRules) {
-	for (const k of Object.keys(br)) fields.add(k)
-}
-printCsv(Array.from(fields.values())) // header
+;(async () => {
+	const bookingRules = await computeAllBookingRules(flexRules, readGtfsFile)
 
-for (const [_, br] of bookingRules) {
-	const row = []
-	let i = 0
-	for (const field of fields) {
-		row[i++] = br[field]
+	const fields = new Set()
+	for (const [_, br] of bookingRules.entries()) {
+		for (const k of Object.keys(br)) fields.add(k)
 	}
-	printCsv(row)
-}
+	printCsv(Array.from(fields.values())) // header
+
+	for (const [_, br] of bookingRules.entries()) {
+		const row = []
+		let i = 0
+		for (const field of fields) {
+			row[i++] = br[field]
+		}
+		printCsv(row)
+	}
+})()
+.catch(showError)

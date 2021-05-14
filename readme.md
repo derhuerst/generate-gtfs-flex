@@ -15,7 +15,7 @@ npm install derhuerst/generate-herrenberg-gtfs-flex
 
 ## Getting started
 
-The scripts in this repo are written to be used with any GTFS feed. But there's also a file [`rufbusse.js`](rufbusse.js), which specifies the on-demand lines in [Herrenberg](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)); and [`booking-rules.js`](booking-rules.js), which is also Herrenberg-specific because it uses `rufbusse.js`.
+The scripts in this repo are written to be used with any GTFS feed. But there's also a file [`rufbusse.js`](rufbusse.js), which specifies the on-demand lines in [Herrenberg](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)).
 
 The following steps will demonstrate how to use the scripts with `rufbusse.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. They assume that you have installed [Node.js](https://nodejs.org/) (which includes [`npm`](https://docs.npmjs.com/cli/v7)).
 
@@ -38,7 +38,8 @@ npm exec -- generate-locations-geojson \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
 npm exec -- generate-booking-rules-txt \
-	node_modules/generate-herrenberg-gtfs-flex/booking-rules.js \
+	node_modules/generate-herrenberg-gtfs-flex/rufbusse.js \
+	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
 npm exec -- patch-stop-times-txt \
 	node_modules/generate-herrenberg-gtfs-flex/rufbusse.js \
@@ -53,24 +54,24 @@ If you install the globally (via `npm install derhuerst/generate-herrenberg-gtfs
 
 ```
 Usage:
-    generate-locations-geojson <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+    generate-locations-geojson <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
 Examples:
-    generate-locations-geojson lib/rufbusse.js \
+    generate-locations-geojson flex-rules.js \
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/locations.geojson
 ```
 
 ```
 Usage:
-    generate-booking-rules-txt <path-to-booking-rules>
+    generate-booking-rules-txt <path-to-flex-rules> <gtfs-routes>
 Examples:
-	generate-booking-rules-txt booking-rules.js >gtfs/booking_rules.txt
+    generate-booking-rules-txt flex-rules.js gtfs/routes.txt >gtfs/booking_rules.txt
 ```
 
 ```
 Usage:
-    patch-stop-times-txt <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+    patch-stop-times-txt <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
 Examples:
-    patch-stop-times-txt lib/rufbusse.js \
+    patch-stop-times-txt flex-rules.js \
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 ```
 

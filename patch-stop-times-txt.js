@@ -14,9 +14,9 @@ const argv = mri(process.argv.slice(2), {
 if (argv.help || argv.h) {
 	process.stdout.write(`
 Usage:
-    patch-stop-times-txt <path-to-rufbusse> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+    patch-stop-times-txt <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
 Examples:
-    patch-stop-times-txt lib/rufbusse.js \\
+    patch-stop-times-txt flex-rules.js \\
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 \n`)
 	process.exit(0)
@@ -39,11 +39,11 @@ const dropOffTypes = require('gtfs-utils/drop-off-types')
 const {Stringifier} = require('csv-stringify')
 const createReadGtfsFile = require('./lib/read-gtfs-files')
 const addSeconds = require('./lib/add-seconds')
-const computeBookingRulesByTripId = require('./lib/booking-rules-by-trip-id')
+const computeFlexSpecsByTripId = require('./lib/flex-specs-by-trip-id')
 
-const pathToRufbusse = argv._[0]
-if (!pathToRufbusse) showError('Missing path-to-rufbusse.')
-const rufbusse = require(resolve(process.cwd(), pathToRufbusse))
+const pathToFlexRules = argv._[0]
+if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
+const flexRules = require(resolve(process.cwd(), pathToFlexRules))
 
 const requiredGtfsFiles = [
 	'routes',
@@ -138,7 +138,7 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 }
 
 ;(async () => {
-	const byTripId = await computeBookingRulesByTripId(rufbusse, readGtfsFile)
+	const byTripId = await computeFlexSpecsByTripId(flexRules, readGtfsFile)
 
 	const csv = new Stringifier({quoted: true})
 	let first = true

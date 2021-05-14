@@ -4,7 +4,7 @@ const pickupTypes = require('gtfs-utils/pickup-types')
 const dropOffTypes = require('gtfs-utils/drop-off-types')
 const bookingTypes = require('gtfs-utils/booking-types')
 
-const herrenbergCitybus = {
+const herrenbergCitybusFlex = {
 	id: 'herrenberg-citybus-300m',
 	radius: .3, // in km, for the generated location area
 	pickup_type: pickupTypes.MUST_PHONE_AGENCY,
@@ -21,8 +21,14 @@ Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle. Aufpreis 0,
 		info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
 	},
 }
+const herrenbergCitybusRoutes = ['RT779', 'RT780', 'RT782', 'RT783']
+const herrenbergCitybus = (origRoute) => (
+	herrenbergCitybusRoutes.includes(origRoute.route_short_name)
+		? herrenbergCitybusFlex
+		: null
+)
 
-const regionalbus = {
+const regionalbusFlex = {
 	// todo: is 300m correct?
 	id: 'regionalbus-300m',
 	radius: .3, // in km, for the generated location area
@@ -40,23 +46,20 @@ Haustürbeförderung beim Absetzen. Aufpreis 1€.`,
 		info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
 	},
 }
-
-const rufbusse = new Map([
-	['RT779', herrenbergCitybus],
-	['RT780', herrenbergCitybus],
-	['RT782', herrenbergCitybus],
-	['RT783', herrenbergCitybus],
-
+const regionalbusRoutes = ['RT753', 'RT773', 'RT775', 'RT791', 'RT794']
+const regionalbus = (origRoute) => (
 	// todo: add line-specific contact details
 	// todo: do all of these have drop-off at home?
-	['RT753', regionalbus],
-	['RT773', regionalbus],
-	['RT775', regionalbus],
-	['RT791', regionalbus],
-	['RT794', regionalbus],
+	regionalbusRoutes.includes(origRoute.route_short_name)
+		? regionalbusFlex
+		: null
+)
 
+const rufbusseFlexRules = [
+	herrenbergCitybus,
+	regionalbus,
 	// todo: more lines?
 	// todo: what about e.g. "RT77" `51-77-j21-1`? pdf fahrplan doesn't show on-demand stops
-])
+]
 
-module.exports = rufbusse
+module.exports = rufbusseFlexRules
