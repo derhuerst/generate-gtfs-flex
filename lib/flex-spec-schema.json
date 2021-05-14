@@ -1,0 +1,59 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"$ref": "#/$defs/FlexSpec",
+	"$defs": {
+		"FlexSpec": {
+			"title": "GTFS-Flex spec",
+			"type": "object",
+			"required": [
+				"id",
+				"radius",
+				"pickup_type",
+				"drop_off_type",
+				"bookingRule"
+			],
+			"properties": {
+				"id": {"type": "string", "minLength": 1},
+				"radius": {
+					"description": "Radius of the generated GTFS-FlexibleTrips (https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md#gtfs-flexibletrips) location area, in kilometers.",
+					"type": "number",
+					"exclusiveMinimum": 0
+				},
+				"pickup_type": {
+					"description": "GTFS-Static stop_times.txt pickup_type value.",
+					"type": "integer"
+				},
+				"drop_off_type": {
+					"description": "GTFS-Static stop_times.txt drop_off_type value.",
+					"type": "integer"
+				},
+				"bookingRule": {"$ref": "#/$defs/BookingRule"}
+			}
+		},
+		"BookingRule": {
+			"description": "A GTFS-BookingRules booking_rules.txt (https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md#booking_rulestxt-file-added) entry/row.",
+			"type": "object",
+			"required": [
+				"booking_rule_id",
+				"booking_type"
+			],
+			"properties": {
+				"booking_rule_id": {"type": "string", "minLength": 1},
+				"booking_type": {"type": "integer"},
+				"prior_notice_duration_min": {"type": "integer"},
+				"prior_notice_duration_max": {"type": "integer"},
+				"prior_notice_last_day": {"type": "integer"},
+				"prior_notice_last_time": {"type": "string", "minLength": 1},
+				"prior_notice_start_day": {"type": "integer"},
+				"prior_notice_start_time": {"type": "string", "minLength": 1},
+				"prior_notice_service_id": {"type": "string", "minLength": 1},
+				"message": {"type": "string", "minLength": 1},
+				"pickup_message": {"type": "string", "minLength": 1},
+				"drop_off_message": {"type": "string", "minLength": 1},
+				"phone_number": {"type": "string", "minLength": 1},
+				"info_url": {"type": "string", "minLength": 1},
+				"booking_url": {"type": "string", "minLength": 1}
+			}
+		}
+	}
+}
