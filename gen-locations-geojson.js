@@ -36,7 +36,7 @@ const {resolve} = require('path')
 const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
 const createReadGtfsFile = require('./lib/read-gtfs-files')
-const computeFlexSpecsByTripId = require('./lib/flex-specs-by-trip-id')
+const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
 
 const pathToFlexRules = argv._[0]
 if (!pathToFlexRules) showError('Missing path-to-flex-rules.')

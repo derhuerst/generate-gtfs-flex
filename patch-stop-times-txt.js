@@ -39,7 +39,7 @@ const dropOffTypes = require('gtfs-utils/drop-off-types')
 const {Stringifier} = require('csv-stringify')
 const createReadGtfsFile = require('./lib/read-gtfs-files')
 const addSeconds = require('./lib/add-seconds')
-const computeFlexSpecsByTripId = require('./lib/flex-specs-by-trip-id')
+const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
 
 const pathToFlexRules = argv._[0]
 if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
