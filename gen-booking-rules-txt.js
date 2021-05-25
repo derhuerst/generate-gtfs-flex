@@ -45,12 +45,6 @@ const requiredGtfsFiles = [
 ]
 const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
-// todo: this doesn't escape multiline values, is that correct?
-const csv = new Stringifier({quoted: true})
-const printCsv = (row) => {
-	process.stdout.write(csv.stringify(row) + '\n')
-}
-
 ;(async () => {
 	const bookingRules = await computeAllBookingRules(flexRules, readGtfsFile)
 
@@ -58,7 +52,12 @@ const printCsv = (row) => {
 	for (const [_, br] of bookingRules.entries()) {
 		for (const k of Object.keys(br)) fields.add(k)
 	}
-	printCsv(Array.from(fields.values())) // header
+	const csv = new Stringifier({
+		quoted: true,
+		columns: Array.from(fields.values()),
+		header: true,
+	})
+	csv.pipe(process.stdout)
 
 	for (const [_, br] of bookingRules.entries()) {
 		const row = []
@@ -66,7 +65,8 @@ const printCsv = (row) => {
 		for (const field of fields) {
 			row[i++] = br[field]
 		}
-		printCsv(row)
+		csv.write(row)
 	}
+	csv.end()
 })()
 .catch(showError)

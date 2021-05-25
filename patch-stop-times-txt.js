@@ -140,16 +140,11 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 ;(async () => {
 	const byTripId = await computeFlexSpecsByTripId(flexRules, readGtfsFile)
 
-	const csv = new Stringifier({quoted: true})
-	let first = true
-	const printCsv = (row) => {
-		// todo: this assumes that row's fields are always in the same order
-		if (first) {
-			first = false
-			process.stdout.write(csv.stringify(Object.keys(row)) + '\n')
-		}
-		process.stdout.write(csv.stringify(Object.values(row)) + '\n')
-	}
+	const csv = new Stringifier({
+		quoted: true,
+		header: true,
+	})
+	csv.pipe(process.stdout)
 
 	for await (const st of readGtfsFile('stop_times')) {
 		// Assume non-on-demand case first.
@@ -165,7 +160,8 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 			patchStopTime(st, spec)
 		}
 
-		printCsv(st)
+		csv.write(st)
 	}
+	csv.end()
 })()
 .catch(showError)
