@@ -5,6 +5,7 @@
 	"version": "2.0.0",
 	"bin": {
 		"generate-locations-geojson": "gen-locations-geojson.js",
+		"generate-location-groups-txt": "gen-location-groups-txt.js",
 		"generate-booking-rules-txt": "gen-booking-rules-txt.js",
 		"patch-stop-times-txt": "patch-stop-times-txt.js"
 	},
