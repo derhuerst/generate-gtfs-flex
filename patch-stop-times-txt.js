@@ -40,6 +40,9 @@ const {Stringifier} = require('csv-stringify')
 const createReadGtfsFile = require('./lib/read-gtfs-files')
 const addSeconds = require('./lib/add-seconds')
 const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
+const {
+	generateFlexLocationId: flexLocId,
+} = require('./lib/ids')
 
 const pathToFlexRules = argv._[0]
 if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
@@ -74,10 +77,7 @@ const patchStopTime = (st, rufbusSpec) => {
 	// GTFS-FlexibleTrips
 	// https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md#stop_timestxt-file-extended
 
-	st.stop_id = [ // todo: DRY with gen-locations-geojson.js
-		specId,
-		st.stop_id,
-	].join('-')
+	st.stop_id = flexLocId(specId, st.stop_id)
 
 	// `arrival_time`:
 	// - Forbidden when `stop_times.stop_id` references a `location_groups.locationg_group_id` or an `id` from `locations.geojson`.

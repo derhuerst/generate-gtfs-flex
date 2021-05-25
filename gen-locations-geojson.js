@@ -37,6 +37,7 @@ const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
 const createReadGtfsFile = require('./lib/read-gtfs-files')
 const {computeFlexSpecsWithStopsByTripId} = require('./lib/flex-specs-by-trip-id')
+const {generateFlexLocationId: flexLocId} = require('./lib/ids')
 
 const pathToFlexRules = argv._[0]
 if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
@@ -73,10 +74,7 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 			stops,
 		} = spec
 		for (const s of stops) {
-			const locId = [ // todo: DRY with patch-stop-times-txt.js
-				specId,
-				s.stop_id,
-			].join('-')
+			const locId = flexLocId(specId, s.stop_id)
 			if (printedLocs.has(locId)) continue
 
 			const properties = {
