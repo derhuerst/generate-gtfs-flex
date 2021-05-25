@@ -36,7 +36,7 @@ const {resolve} = require('path')
 const circle = require('@turf/circle').default
 const truncate = require('@turf/truncate').default
 const createReadGtfsFile = require('./lib/read-gtfs-files')
-const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
+const {computeFlexSpecsWithStopsByTripId} = require('./lib/flex-specs-by-trip-id')
 
 const pathToFlexRules = argv._[0]
 if (!pathToFlexRules) showError('Missing path-to-flex-rules.')
@@ -51,23 +51,7 @@ const requiredGtfsFiles = [
 const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 ;(async () => {
-	const byTripId = await computeFlexSpecsByTripId(flexRules, readGtfsFile)
-	for (const spec of byTripId.values()) {
-		spec.stops = new Set()
-	}
-
-	const allStops = new Map()
-	for await (const s of readGtfsFile('stops')) {
-		allStops.set(s.stop_id, s)
-	}
-
-	for await (const st of readGtfsFile('stop_times')) {
-		if (!byTripId.has(st.trip_id)) continue
-		if (!allStops.has(st.stop_id)) continue
-
-		const {stops} = byTripId.get(st.trip_id)
-		stops.add(allStops.get(st.stop_id))
-	}
+	const byTripId = await computeFlexSpecsWithStopsByTripId(flexRules, readGtfsFile)
 
 	process.stdout.write(`\
 {
