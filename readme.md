@@ -41,6 +41,10 @@ npm exec -- generate-booking-rules-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
+npm exec -- patch-trips-txt \
+	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
+	| sponge vvs-gtfs/trips.txt
 npm exec -- patch-stop-times-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
@@ -69,11 +73,21 @@ Examples:
 
 ```
 Usage:
+    patch-trips-txt <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+Examples:
+    patch-trips-txt flex-rules.js \
+        gtfs/{routes,trips,stops,stop_times}.txt >gtfs/trips.patched.txt
+```
+
+```
+Usage:
     patch-stop-times-txt <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
 Examples:
     patch-stop-times-txt flex-rules.js \
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 ```
+
+*Note:* Currently, this tool *duplicates* all trips & `stop_times` rows affected by one of the rules: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
 
 ### with Docker
 
@@ -139,6 +153,9 @@ npm exec -- generate-locations-geojson \
 npm exec -- generate-booking-rules-txt \
 	flex-rules.js gtfs/routes.txt \
 	>gtfs/booking_rules.txt
+npm exec -- patch-trips-txt \
+	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
+	| sponge gtfs/trips.txt
 npm exec -- patch-stop-times-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge gtfs/stop_times.txt

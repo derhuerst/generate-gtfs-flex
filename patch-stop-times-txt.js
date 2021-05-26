@@ -42,6 +42,7 @@ const addSeconds = require('./lib/add-seconds')
 const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
 const {
 	generateFlexLocationId: flexLocId,
+	generateFlexTripId: genFlexTripId,
 } = require('./lib/ids')
 
 const pathToFlexRules = argv._[0]
@@ -147,6 +148,10 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 	})
 	csv.pipe(process.stdout)
 
+	// (original) trip ID -> stop_times rows
+	const flexTrips = new Map()
+
+	// pass through all stop_times rows, just add empty columns
 	for await (const st of readGtfsFile('stop_times')) {
 		// Assume non-on-demand case first.
 		st.pickup_booking_rule_id = null
@@ -154,15 +159,33 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 		st.start_pickup_dropoff_window = null
 		st.end_pickup_dropoff_window = null
 		st.timepoint = timepointTypes.EXACT
+		csv.write(st)
 
 		if (byTripId.has(st.trip_id)) {
-			// On-demand case, modify `st` accordingly.
-			const spec = byTripId.get(st.trip_id)
-			patchStopTime(st, spec)
+			if (!flexTrips.has(st.trip_id)) {
+				flexTrips.set(st.trip_id, [st])
+			} else {
+				flexTrips.get(st.trip_id).push(st)
+			}
 		}
-
-		csv.write(st)
 	}
+
+	for (let [originalTripId, stopTimes] of flexTrips.entries()) {
+		const flexSpec = byTripId.get(originalTripId)
+		const flexTripId = genFlexTripId(originalTripId)
+
+		stopTimes = stopTimes
+		.sort((a, b) => parseInt(a.stop_sequence) - parseInt(b.stop_sequence))
+		.forEach((st) => {
+			const flexSt = {
+				...st,
+				trip_id: flexTripId,
+			}
+			patchStopTime(flexSt, flexSpec)
+			csv.write(flexSt)
+		})
+	}
+
 	csv.end()
 })()
 .catch(showError)
