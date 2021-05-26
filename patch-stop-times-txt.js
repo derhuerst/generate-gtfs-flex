@@ -51,6 +51,7 @@ const flexRules = require(resolve(process.cwd(), pathToFlexRules))
 const requiredGtfsFiles = [
 	'routes',
 	'trips',
+	'stops',
 	'stop_times',
 ]
 const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
