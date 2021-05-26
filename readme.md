@@ -37,6 +37,10 @@ npm exec -- generate-locations-geojson \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
+npm exec -- generate-location-groups-txt \
+	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
+	>vvs-gtfs/location_groups.txt
 npm exec -- generate-booking-rules-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
@@ -73,6 +77,14 @@ Usage:
 Examples:
     patch-stop-times-txt flex-rules.js \
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
+```
+
+```
+Usage:
+    generate-location-groups-txt <path-to-flex-rules> <gtfs-routes> <gtfs-trips> <gtfs-stops> <gtfs-stop-times>
+Examples:
+    generate-location-groups-txt flex-rules.js \
+        gtfs/{routes,trips,stops,stop_times}.txt >gtfs/location_groups.txt
 ```
 
 ### with Docker
@@ -136,6 +148,9 @@ cp -r node_modules/sample-gtfs-feed/gtfs gtfs
 npm exec -- generate-locations-geojson \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	>gtfs/locations.geojson
+npm exec -- generate-location-groups-txt \
+	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
+	>gtfs/location_groups.txt
 npm exec -- generate-booking-rules-txt \
 	flex-rules.js gtfs/routes.txt \
 	>gtfs/booking_rules.txt
