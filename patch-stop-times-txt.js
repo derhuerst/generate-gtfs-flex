@@ -62,12 +62,20 @@ const timepointTypes = { // todo: move to gtfs-utils
 	EXACT: 1,
 }
 
-const patchStopTime = (st, rufbusSpec) => {
+const patchStopTimeWithBookingRules = (st, rufbusSpec) => {
+	const {bookingRule} = rufbusSpec
+
+	// GTFS-BookingRules
+	// https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md#stop_timestxt-file-extended-1
+	st.pickup_booking_rule_id = bookingRule.booking_rule_id
+	st.drop_off_booking_rule_id = bookingRule.booking_rule_id
+}
+
+const patchStopTimeWithFlexibleTrips = (st, rufbusSpec) => {
 	const {
 		id: specId,
 		pickup_type,
 		drop_off_type,
-		bookingRule,
 	} = rufbusSpec
 	const {
 		arrival_time,
@@ -131,12 +139,6 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 
 	// todo: add mean_duration_factor & mean_duration_offset?
 	// todo: add safe_duration_factor & safe_duration_offset?
-
-	// GTFS-BookingRules
-	// https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md#stop_timestxt-file-extended-1
-
-	st.pickup_booking_rule_id = bookingRule.booking_rule_id
-	st.drop_off_booking_rule_id = bookingRule.booking_rule_id
 }
 
 ;(async () => {
@@ -159,15 +161,19 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 		st.start_pickup_dropoff_window = null
 		st.end_pickup_dropoff_window = null
 		st.timepoint = timepointTypes.EXACT
-		csv.write(st)
 
 		if (byTripId.has(st.trip_id)) {
+			const flexSpec = byTripId.get(st.trip_id)
+			patchStopTimeWithBookingRules(st, flexSpec)
+
 			if (!flexTrips.has(st.trip_id)) {
 				flexTrips.set(st.trip_id, [st])
 			} else {
 				flexTrips.get(st.trip_id).push(st)
 			}
 		}
+
+		csv.write(st)
 	}
 
 	for (let [originalTripId, stopTimes] of flexTrips.entries()) {
@@ -181,7 +187,8 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 				...st,
 				trip_id: flexTripId,
 			}
-			patchStopTime(flexSt, flexSpec)
+			patchStopTimeWithBookingRules(flexSt, flexSpec)
+			patchStopTimeWithFlexibleTrips(flexSt, flexSpec)
 			csv.write(flexSt)
 		})
 	}
