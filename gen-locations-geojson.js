@@ -78,8 +78,10 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 			if (printedLocs.has(locId)) continue
 
 			const properties = {
-				// todo: stop_name?
-				// todo: stop_desc?
+				// We duplicate the name here because some downstream tools need it.
+				name: s.stop_name || null,
+				stop_name: s.stop_name || null,
+				stop_desc: s.stop_desc || null,
 				// todo: stop_url?
 			}
 			printLoc({
