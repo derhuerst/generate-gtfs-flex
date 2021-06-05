@@ -39,9 +39,9 @@ const regionalbusFlex = {
 		booking_type: bookingTypes.SAME_DAY,
 		prior_notice_duration_min: 30,
 		message: `\
-Anmeldung bis 30min vor Abfahrt. Bitte Rahmenbedingungen mit Fr. Schmauderer Landkreis Böblingen 07031 / 663 - 15 03 verifizieren.`,
+Anmeldung bis 30min vor Abfahrt.`,
 		drop_off_message: `\
-Haustürbeförderung beim Absetzen. Aufpreis 1€.`,
+Haustürbeförderung beim Absetzen. Aufpreis 0,80€.`,
 		phone_number: '+49 7032 95 97 37',
 		info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
 	},
