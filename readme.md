@@ -45,6 +45,10 @@ npm exec -- patch-trips-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/trips.txt
+npm exec -- patch-routes-txt \
+	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	vvs-gtfs/routes.txt \
+	| sponge vvs-gtfs/routes.txt
 npm exec -- patch-stop-times-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
@@ -69,6 +73,13 @@ Usage:
     generate-booking-rules-txt <path-to-flex-rules> <gtfs-routes>
 Examples:
     generate-booking-rules-txt flex-rules.js gtfs/routes.txt >gtfs/booking_rules.txt
+```
+
+```
+Usage:
+    patch-routes-txt <path-to-flex-rules> <gtfs-routes>
+Examples:
+    patch-routes-txt flex-rules.js gtfs/routes.txt >gtfs/routes.patched.txt
 ```
 
 ```
@@ -153,6 +164,9 @@ npm exec -- generate-locations-geojson \
 npm exec -- generate-booking-rules-txt \
 	flex-rules.js gtfs/routes.txt \
 	>gtfs/booking_rules.txt
+npm exec -- patch-routes-txt \
+	flex-rules.js gtfs/routes.txt \
+	| sponge gtfs/routes.txt
 npm exec -- patch-trips-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge gtfs/trips.txt
