@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 set -o pipefail
+
+if [ -n "$1" ]; then
+	1>&2 echo "running inside $1"
+	cd "$1"
+fi
+
 set -x
 
 generate-booking-rules-txt /app/herrenberg-flex-rules.js *.txt | tee booking_rules.txt | wc -l

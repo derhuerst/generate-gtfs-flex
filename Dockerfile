@@ -20,4 +20,4 @@ ADD . /app
 RUN npm link
 
 WORKDIR /gtfs
-CMD ["/app/docker-entrypoint.sh"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
