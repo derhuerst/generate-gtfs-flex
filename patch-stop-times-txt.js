@@ -153,19 +153,9 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 	// (original) trip ID -> stop_times rows
 	const flexTrips = new Map()
 
-	// pass through all stop_times rows, just add empty columns
+	// pass through non-on-demand stop_times rows, add empty columns
 	for await (const st of readGtfsFile('stop_times')) {
-		// Assume non-on-demand case first.
-		st.pickup_booking_rule_id = null
-		st.drop_off_booking_rule_id = null
-		st.start_pickup_dropoff_window = null
-		st.end_pickup_dropoff_window = null
-		st.timepoint = timepointTypes.EXACT
-
 		if (byTripId.has(st.trip_id)) {
-			const flexSpec = byTripId.get(st.trip_id)
-			patchStopTimeWithBookingRules(st, flexSpec)
-
 			if (!flexTrips.has(st.trip_id)) {
 				flexTrips.set(st.trip_id, [st])
 			} else {
@@ -173,6 +163,12 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 			}
 		}
 
+		// non-on-demand trip, add empty columns
+		st.pickup_booking_rule_id = null
+		st.drop_off_booking_rule_id = null
+		st.start_pickup_dropoff_window = null
+		st.end_pickup_dropoff_window = null
+		st.timepoint = timepointTypes.EXACT
 		csv.write(st)
 	}
 
@@ -182,14 +178,27 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 
 		stopTimes = stopTimes
 		.sort((a, b) => parseInt(a.stop_sequence) - parseInt(b.stop_sequence))
-		.forEach((st) => {
-			const flexSt = {
+		.forEach((st, i) => {
+			const pickupAtStopSt = {
 				...st,
 				trip_id: flexTripId,
+				stop_sequence: i * 2,
+				timepoint: timepointTypes.EXACT,
 			}
-			patchStopTimeWithBookingRules(flexSt, flexSpec)
-			patchStopTimeWithFlexibleTrips(flexSt, flexSpec)
-			csv.write(flexSt)
+			patchStopTimeWithBookingRules(pickupAtStopSt, flexSpec)
+			pickupAtStopSt.drop_off_type = dropOffTypes.NOT_AVAILBLE
+			csv.write(pickupAtStopSt)
+
+			const dropOffAtFlexAreaSt = {
+				...st,
+				trip_id: flexTripId,
+				stop_sequence: i * 2 + 1,
+				stop_headsign: null,
+			}
+			patchStopTimeWithBookingRules(dropOffAtFlexAreaSt, flexSpec)
+			patchStopTimeWithFlexibleTrips(dropOffAtFlexAreaSt, flexSpec)
+			dropOffAtFlexAreaSt.pickup_type = pickupTypes.NOT_AVAILBLE
+			csv.write(dropOffAtFlexAreaSt)
 		})
 	}
 

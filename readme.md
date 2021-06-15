@@ -5,6 +5,8 @@
 [![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)](license.md)
 [![Docker image build](https://img.shields.io/docker/cloud/build/derhuerst/generate-herrenberg-gtfs-flex)](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex)
 
+*Note:* In order to get the behaviour we want (pickup only at stops but flexible drop-off within 300m), **we currently don't follow the spec as intended**; See [#5](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues/5) and [#6](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/pull/6) for details.
+
 
 ## Installation
 
