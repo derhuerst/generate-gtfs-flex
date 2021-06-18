@@ -64,7 +64,6 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 	// pass through all routes, patch Flex routes as on-demand
 	for await (const t of readGtfsFile('routes')) {
 		if (byRouteId.has(t.route_id)) {
-			console.error(t)
 			t.route_type = DEMAND_AND_RESPONSE_BUS
 		}
 		csv.write(t)
