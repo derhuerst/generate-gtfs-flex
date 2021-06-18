@@ -179,15 +179,8 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 		stopTimes = stopTimes
 		.sort((a, b) => parseInt(a.stop_sequence) - parseInt(b.stop_sequence))
 		.forEach((st, i) => {
-			const pickupAtStopSt = {
-				...st,
-				trip_id: flexTripId,
-				stop_sequence: i * 2,
-				timepoint: timepointTypes.EXACT,
-			}
-			patchStopTimeWithBookingRules(pickupAtStopSt, flexSpec)
-			pickupAtStopSt.drop_off_type = dropOffTypes.NOT_AVAILBLE
-			csv.write(pickupAtStopSt)
+			// We put the drop-off stop_time row before the pickup row so that
+			// you cannot board and then immediately alight at the same stop.
 
 			const dropOffAtFlexAreaSt = {
 				...st,
@@ -199,6 +192,16 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 			patchStopTimeWithFlexibleTrips(dropOffAtFlexAreaSt, flexSpec)
 			dropOffAtFlexAreaSt.pickup_type = pickupTypes.NOT_AVAILBLE
 			csv.write(dropOffAtFlexAreaSt)
+
+			const pickupAtStopSt = {
+				...st,
+				trip_id: flexTripId,
+				stop_sequence: i * 2,
+				timepoint: timepointTypes.EXACT,
+			}
+			patchStopTimeWithBookingRules(pickupAtStopSt, flexSpec)
+			pickupAtStopSt.drop_off_type = dropOffTypes.NOT_AVAILBLE
+			csv.write(pickupAtStopSt)
 		})
 	}
 
