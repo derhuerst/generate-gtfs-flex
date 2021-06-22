@@ -153,9 +153,19 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 	// (original) trip ID -> stop_times rows
 	const flexTrips = new Map()
 
-	// pass through non-on-demand stop_times rows, add empty columns
+	// pass through all stop_times rows, but add booking rules & empty columns
 	for await (const st of readGtfsFile('stop_times')) {
+		// Assume non-on-demand case first.
+		st.pickup_booking_rule_id = null
+		st.drop_off_booking_rule_id = null
+		st.start_pickup_dropoff_window = null
+		st.end_pickup_dropoff_window = null
+		st.timepoint = timepointTypes.EXACT
+
 		if (byTripId.has(st.trip_id)) {
+			const flexSpec = byTripId.get(st.trip_id)
+			patchStopTimeWithBookingRules(st, flexSpec)
+
 			if (!flexTrips.has(st.trip_id)) {
 				flexTrips.set(st.trip_id, [st])
 			} else {
@@ -163,12 +173,6 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 			}
 		}
 
-		// non-on-demand trip, add empty columns
-		st.pickup_booking_rule_id = null
-		st.drop_off_booking_rule_id = null
-		st.start_pickup_dropoff_window = null
-		st.end_pickup_dropoff_window = null
-		st.timepoint = timepointTypes.EXACT
 		csv.write(st)
 	}
 
