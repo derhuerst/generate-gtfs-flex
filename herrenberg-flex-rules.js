@@ -12,9 +12,9 @@ const herrenbergCitybusFlex = {
 	bookingRule: {
 		booking_rule_id: 'herrenberg-citybus',
 		booking_type: bookingTypes.SAME_DAY,
-		prior_notice_duration_min: 30,
+		prior_notice_duration_min: 60,
 		message: `\
-Anmeldung bis 30min vor Abfahrt.`,
+Anmeldung bis 60min vor Abfahrt.`,
 		drop_off_message: `\
 Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle. Aufpreis 0,80€ direkt an den Taxi-Fahrer.`,
 		phone_number: '+49 7032 92029',
@@ -37,9 +37,9 @@ const regionalbusFlex = {
 	bookingRule: {
 		booking_rule_id: 'regionalbus',
 		booking_type: bookingTypes.SAME_DAY,
-		prior_notice_duration_min: 30,
+		prior_notice_duration_min: 60,
 		message: `\
-Anmeldung bis 30min vor Abfahrt.`,
+Anmeldung bis 60min vor Abfahrt.`,
 		drop_off_message: `\
 Haustürbeförderung beim Absetzen. Aufpreis 0,80€.`,
 		phone_number: '+49 7032 95 97 37',
