@@ -189,7 +189,7 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 			const dropOffAtFlexAreaSt = {
 				...st,
 				trip_id: flexTripId,
-				stop_sequence: i * 2 + 1,
+				stop_sequence: i * 2,
 				stop_headsign: null,
 			}
 			patchStopTimeWithBookingRules(dropOffAtFlexAreaSt, flexSpec)
@@ -200,7 +200,7 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 			const pickupAtStopSt = {
 				...st,
 				trip_id: flexTripId,
-				stop_sequence: i * 2,
+				stop_sequence: i * 2 + 1,
 				timepoint: timepointTypes.EXACT,
 			}
 			patchStopTimeWithBookingRules(pickupAtStopSt, flexSpec)
