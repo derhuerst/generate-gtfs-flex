@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:16.8.0-alpine3.13
 LABEL org.opencontainers.image.title="generate-herrenberg-gtfs-flex"
 LABEL org.opencontainers.image.description="Generate GTFS Flex for Herrenberg on-demand public transport service."
 LABEL org.opencontainers.image.authors="Jannis R <mail@jannisr.de>"
