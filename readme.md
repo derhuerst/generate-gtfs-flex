@@ -3,7 +3,6 @@
 **Generate [GTFS Flex v2](https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md) for Herrenberg on-demand public transport service.** Part of [Stadtnavi Herrenberg](https://herrenberg.stadtnavi.de).
 
 [![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)](license.md)
-[![Docker image build](https://img.shields.io/docker/cloud/build/derhuerst/generate-herrenberg-gtfs-flex)](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex)
 
 *Note:* In order to get the behaviour we want (pickup only at stops but flexible drop-off within 300m), **we currently don't follow the spec as intended**; See [#5](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues/5) and [#6](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/pull/6) for details.
 
