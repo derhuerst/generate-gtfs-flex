@@ -29,7 +29,7 @@
 		"@turf/truncate": "^6.3.0",
 		"ajv": "^8.3.0",
 		"csv-parser": "^3.0.0",
-		"csv-stringify": "^5.6.4",
+		"csv-stringify": "^5.6.5",
 		"gtfs-utils": "^4.2.0",
 		"mri": "^1.1.6"
 	},
