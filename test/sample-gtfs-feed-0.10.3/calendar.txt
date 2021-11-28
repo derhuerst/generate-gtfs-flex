@@ -1,0 +1,5 @@
+service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+all-day,1,1,1,1,1,1,1,20190301,20190820
+during-dst,0,0,0,0,0,1,0,20190330,20190330
+on-weekends,0,0,0,0,0,1,1,20190303,20190810
+on-working-days,1,1,1,1,1,1,0,20190308,20190720

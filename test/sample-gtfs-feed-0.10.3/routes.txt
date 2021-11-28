@@ -1,0 +1,5 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_desc,route_url,route_color,route_text_color,route_sort_order
+A,MTA,Ada,Ada Lovelace Bus Line,3,,,,,
+B,FTA,Babbage,Charles Babbage Tram Line,0,Connects the city center and the airport.,https://fta.example.org/lines/babbage.html,FF0000,FFFFFF,4
+C,MTA,Cerf,Cerf Express Line,0,,,,,
+D,FTA,DST,Daylight Saving Time Express,0,,,,,

@@ -1,0 +1,2 @@
+default_lange,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url,feed_publisher_name,feed_publisher_url,feed_lang
+de-AT,20190303,20190810,third version,contact@example.org,https://example.org/,Some Transit Authority,http://sta.example.org,de-AT

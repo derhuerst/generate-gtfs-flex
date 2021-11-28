@@ -1,0 +1,9 @@
+route_id,service_id,trip_id,shape_id,trip_headsign,trip_short_name,direction_id,wheelchair_accessible,bikes_allowed
+A,all-day,a-downtown-all-day,a-downtown-all-day-s0,,,,,
+A,all-day,a-outbound-all-day,a-outbound-all-day-s0,,,,,
+B,on-weekends,b-downtown-on-weekends,,Babbage (Downtown),Babbage,0,1,0
+B,on-working-days,b-downtown-on-working-days,,Babbage (Downtown),Babbage,0,1,0
+B,on-weekends,b-outbound-on-weekends,,Babbage (Outbound),Babbage,1,0,1
+B,on-working-days,b-outbound-on-working-days,,Babbage (Outbound),Babbage,1,0,1
+C,all-day,c-downtown-all-day,,Cerf Express,,,,
+D,during-dst,during-dst-1,,Hello Daylight Saving Time!,,,,

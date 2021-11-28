@@ -1,0 +1,4 @@
+level_id,level_index,level_name
+airport-level-0,0,ground level
+airport-level-1,1,platform 1
+airport-level-3,3,platform 2

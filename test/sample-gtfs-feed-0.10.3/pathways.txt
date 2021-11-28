@@ -1,0 +1,7 @@
+pathway_id,from_stop_id,to_stop_id,pathway_mode,is_bidirectional,signposted_as,length,traversal_time,max_slope,min_width,reversed_signposted_as
+0,airport-entrance,airport-1-access,4,0,,,,,,
+1,airport-1-access,airport-1,2,1,,,,,,
+2,airport-1-access,airport-entrance,7,0,exit,,,,,
+3,airport-entrance,airport-2-access,1,1,towards platform 2 boarding,200,200,0.06,2,main hall
+4,airport-2-access,airport-2-boarding,5,1,,,,,,
+5,airport-entrance,museum,1,1,,1250,,,,

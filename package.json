@@ -34,10 +34,12 @@
 		"mri": "^1.1.6"
 	},
 	"devDependencies": {
-		"eslint": "^8.3.0"
+		"eslint": "^8.3.0",
+		"sample-gtfs-feed": "^0.10.3"
 	},
 	"scripts": {
 		"lint": "eslint .",
-		"prepublishOnly": "npm run lint"
+		"test": "./test/index.sh",
+		"prepublishOnly": "npm run lint && npm test"
 	}
 }
