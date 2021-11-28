@@ -18,7 +18,7 @@ npm install derhuerst/generate-herrenberg-gtfs-flex
 
 The scripts in this repo are written to be used with any GTFS feed. But there's also a file [`herrenberg-flex-rules.js`](herrenberg-flex-rules.js), which specifies the on-demand lines in [Herrenberg, Germany](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)).
 
-The following steps will demonstrate how to use the scripts with `herrenberg-flex-rules.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. They assume that you have installed [Node.js](https://nodejs.org/) (which includes [`npm`](https://docs.npmjs.com/cli/v7)).
+The following steps will demonstrate how to use the scripts with `herrenberg-flex-rules.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. You must have [Node.js](https://nodejs.org/) installed (which includes the [`npm` CLI](https://docs.npmjs.com/cli/v7)).
 
 ```bash
 # set up dev environment
@@ -31,7 +31,7 @@ wget 'https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491/resour
 unzip -d vvs-gtfs vvs.gtfs.zip
 
 # install generate-herrenberg-gtfs-flex
-npm install derhuerst/generate-herrenberg-gtfs-flex -D
+npm install --save-dev derhuerst/generate-herrenberg-gtfs-flex
 
 # patch GTFS-Flex data into the VVS GTFS feed
 npm exec -- generate-locations-geojson \
@@ -56,7 +56,7 @@ npm exec -- patch-stop-times-txt \
 	| sponge vvs-gtfs/stop_times.txt
 ```
 
-If you install the globally (via `npm install derhuerst/generate-herrenberg-gtfs-flex -g`), npm will put the scripts into your [`$PATH`](https://en.wikipedia.org/wiki/PATH_(variable)), so instead of using `npm exec`, you'll be able to just call them as documented below.
+If you install the package globally (via `npm install derhuerst/generate-herrenberg-gtfs-flex -g`), npm will put the scripts into your [`$PATH`](https://en.wikipedia.org/wiki/PATH_(variable)), so instead of using `npm exec`, you'll be able to just call them as documented below.
 
 
 ## Usage
@@ -99,7 +99,7 @@ Examples:
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 ```
 
-*Note:* Currently, this tool *duplicates* all trips & `stop_times` rows affected by one of the rules: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
+*Note:* Currently, this tool *duplicates* all trips & `stop_times` rows affected by any of the rules: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
 
 ### with Docker
 
@@ -123,7 +123,7 @@ npm init --yes
 npm install --save-dev sample-gtfs-feed derhuerst/generate-herrenberg-gtfs-flex
 ```
 
-We're going to write a file `flex-rules.js` that exports a list of GTFS-Flex *rules*. Each of these rules is a functions that should, when given a `routes.txt` entry/row, return either `null` to leave it unchanged or return a GTFS-Flex *spec* (check out [the schema](lib/flex-spec-schema.json)) to patch it:
+We're going to write a file `flex-rules.js` that exports a list of GTFS-Flex *rules*. Each of these rules is a function that must, when given a `routes.txt` entry/row, return either `null` to leave it unchanged or return a GTFS-Flex *spec* (check out [the schema](lib/flex-spec-schema.json)) to patch it:
 
 ```js
 const pickupTypes = require('gtfs-utils/pickup-types')
@@ -131,14 +131,14 @@ const dropOffTypes = require('gtfs-utils/drop-off-types')
 const bookingTypes = require('gtfs-utils/booking-types')
 
 const adaLovelaceFlexibleDropOff = (route) => {
-	if (route.id !== 'A') return null // leave route unchanged
+	if (route.route_id !== 'A') return null // leave route unchanged
 	return {
 		id: 'A-flexible-drop-off', // ID of the GTFS-Flex spec
 		radius: .200, // flexible drop-off within 200m of a stop
 		pickup_type: pickupTypes.MUST_PHONE_AGENCY,
 		drop_off_type: dropOffTypes.MUST_COORDINATE_WITH_DRIVER,
 		bookingRule: {
-			// ID of the GTFS-BookingRules booking_rules.txt entry/row
+			// ID of the GTFS-BookingRules booking_rules.txt entry/row to be generated
 			booking_rule_id: 'flexible-drop-off',
 			booking_type: bookingTypes.SAME_DAY,
 			prior_notice_duration_min: 30,
@@ -148,12 +148,12 @@ const adaLovelaceFlexibleDropOff = (route) => {
 	}
 }
 
-module.exports [
+module.exports = [
 	adaLovelaceFlexibleDropOff,
 ]
 ```
 
-We can now patch GTFS-Flex data into `sample-gtfs-feed`'s GTFS data:
+We can now patch the GTFS-Flex *rules* into `sample-gtfs-feed`'s GTFS feed:
 
 ```shell
 # copy the GTFS feed first, so that we don't mutate node_modules
