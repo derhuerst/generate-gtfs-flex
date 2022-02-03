@@ -106,10 +106,21 @@ Examples:
 
 ### with Docker
 
-You can use the [`derhuerst/generate-herrenberg-gtfs-flex` Docker image](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
+You can use the [`derhuerst/generate-herrenberg-gtfs-flex` Docker image](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container.
+
+- You need to specify the *rule file* (see above) to use, either a relative path to a bundled *rule file* or an absolute path to you own.
+- Optionally, you can pass the path of the GTFS directory (default is `/gtfs`).
 
 ```shell
-docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-flex
+# with a bundled rule file
+docker run \
+	-v /path/to/gtfs:/gtfs \
+	--rm -it derhuerst/generate-herrenberg-gtfs-flex
+# with your own rule file & custom GTFS directory
+docker run \
+	-v $PWD:/cfg -v /path/to/my-gtfs:/my-gtfs \
+	--rm -it derhuerst/generate-herrenberg-gtfs-flex \
+	/cfg/my-flex-rules.js /my-gtfs
 ```
 
 **⚠️ This will overwrite the original `routes.txt`, `trips.txt` & `stop_times.txt` files.**
