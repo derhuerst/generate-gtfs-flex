@@ -1,6 +1,6 @@
 # generate-herrenberg-gtfs-flex
 
-**Generate [GTFS Flex v2](https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md) for Herrenberg on-demand public transport service.** Part of [Stadtnavi Herrenberg](https://herrenberg.stadtnavi.de).
+Given a [GTFS Static](https://gtfs.org/reference/static) feed, **add [GTFS Flex v2](https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md) to model on-demand public transport service.**
 
 [![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)](license.md)
 
@@ -11,6 +11,8 @@
 
 ```shell
 npm install derhuerst/generate-herrenberg-gtfs-flex
+# or
+docker pull derhuerst/generate-herrenberg-gtfs-flex
 ```
 
 
@@ -21,7 +23,7 @@ The scripts in this repo are written to be used with any GTFS feed. But there's 
 The following steps will demonstrate how to use the scripts with `herrenberg-flex-rules.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. You must have [Node.js](https://nodejs.org/) installed (which includes the [`npm` CLI](https://docs.npmjs.com/cli/v7)).
 
 ```bash
-# set up dev environment
+# set up an empty npm project
 mkdir flex
 cd flex
 npm init --yes
@@ -31,33 +33,33 @@ npm init --yes
 wget 'https://www.opendata-oepnv.de/dataset/d1768457-c717-45ea-8e26-dd1e759d5ffe/resource/ebc2eaae-9a03-4ace-8df7-28df10a80993/download/google_transit.zip' -O vvs.gtfs.zip
 unzip -d vvs-gtfs vvs.gtfs.zip
 
-# install generate-herrenberg-gtfs-flex
+# install generate-herrenberg-gtfs-flex as a development dependency
 npm install --save-dev derhuerst/generate-herrenberg-gtfs-flex
 
 # patch GTFS-Flex data into the VVS GTFS feed
-npm exec -- generate-locations-geojson \
+./node_modules/.bin/generate-locations-geojson \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
-npm exec -- generate-booking-rules-txt \
+./node_modules/.bin/generate-booking-rules-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
-npm exec -- patch-trips-txt \
+./node_modules/.bin/patch-trips-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/trips.txt
-npm exec -- patch-routes-txt \
+./node_modules/.bin/patch-routes-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	| sponge vvs-gtfs/routes.txt
-npm exec -- patch-stop-times-txt \
+./node_modules/.bin/patch-stop-times-txt \
 	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/stop_times.txt
 ```
 
-If you install the package globally (via `npm install derhuerst/generate-herrenberg-gtfs-flex -g`), npm will put the scripts into your [`$PATH`](https://en.wikipedia.org/wiki/PATH_(variable)), so instead of using `npm exec`, you'll be able to just call them as documented below.
+*pro tip:* If you install the package globally (via `npm install derhuerst/generate-herrenberg-gtfs-flex -g`), npm will put the scripts into your [`$PATH`](https://en.wikipedia.org/wiki/PATH_(variable)), so instead of running `./node_modules/.bin/…`, you'll be able to just use them as documented below.
 
 
 ## Usage
@@ -100,7 +102,7 @@ Examples:
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 ```
 
-*Note:* Currently, this tool *duplicates* all trips & `stop_times` rows affected by any of the rules: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
+*Note:* Currently, `generate-herrenberg-gtfs-flex` inserts all trips & `stop_times` rows affected by any of the rules *twice*: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
 
 ### with Docker
 
@@ -110,7 +112,7 @@ You can use the [`derhuerst/generate-herrenberg-gtfs-flex` Docker image](https:/
 docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-flex
 ```
 
-**⚠️ This will overwrite the original `stop_times.txt` file.**
+**⚠️ This will overwrite the original `routes.txt`, `trips.txt` & `stop_times.txt` files.**
 
 
 ### with your own GTFS feed & GTFS-Flex rules
@@ -118,6 +120,7 @@ docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-fl
 You can use the scripts in this repo with *any* GTFS feed. As an example, we're going to patch [`sample-gtfs-feed`](https://github.com/public-transport/sample-gtfs-feed)'s `A` ("Ada Lovelace Bus Line") route to have flexible on-demand drop-offs.
 
 ```shell
+# as above, initialise an empty npm project & install generate-herrenberg-gtfs-flex
 mkdir sample-gtfs-feed-with-flex
 cd sample-gtfs-feed-with-flex
 npm init --yes
@@ -160,19 +163,19 @@ We can now patch the GTFS-Flex *rules* into `sample-gtfs-feed`'s GTFS feed:
 # copy the GTFS feed first, so that we don't mutate node_modules
 cp -r node_modules/sample-gtfs-feed/gtfs gtfs
 
-npm exec -- generate-locations-geojson \
+./node_modules/.bin/generate-locations-geojson \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	>gtfs/locations.geojson
-npm exec -- generate-booking-rules-txt \
+./node_modules/.bin/generate-booking-rules-txt \
 	flex-rules.js gtfs/routes.txt \
 	>gtfs/booking_rules.txt
-npm exec -- patch-routes-txt \
+./node_modules/.bin/patch-routes-txt \
 	flex-rules.js gtfs/routes.txt \
 	| sponge gtfs/routes.txt
-npm exec -- patch-trips-txt \
+./node_modules/.bin/patch-trips-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge gtfs/trips.txt
-npm exec -- patch-stop-times-txt \
+./node_modules/.bin/patch-stop-times-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge gtfs/stop_times.txt
 ```
