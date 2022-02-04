@@ -7,7 +7,6 @@
 			"type": "object",
 			"required": [
 				"id",
-				"radius",
 				"pickup_type",
 				"drop_off_type",
 				"bookingRule"
