@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "generate-herrenberg-gtfs-flex",
+	"name": "generate-gtfs-flex",
 	"description": "Generate GTFS Flex for Herrenberg on-demand public transport service.",
 	"version": "3.0.1",
 	"bin": {
@@ -17,9 +17,9 @@
 		"gtfs-flex"
 	],
 	"author": "Jannis R <mail@jannisr.de>",
-	"homepage": "https://github.com/derhuerst/generate-herrenberg-gtfs-flex",
-	"repository": "derhuerst/generate-herrenberg-gtfs-flex",
-	"bugs": "https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues",
+	"homepage": "https://github.com/derhuerst/generate-gtfs-flex",
+	"repository": "derhuerst/generate-gtfs-flex",
+	"bugs": "https://github.com/derhuerst/generate-gtfs-flex/issues",
 	"license": "ISC",
 	"engines": {
 		"node": ">=14"
