@@ -26,8 +26,9 @@ mkdir flex
 cd flex
 npm init --yes
 
-# download and unzip VVS GTFS feed
-wget 'https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491/resource/bfbb59c7-767c-4bca-bbb2-d8d32a3e0378/download/google_transit.zip' -O vvs.gtfs.zip
+# download and unzip 2022-01-17 VVS GTFS feed
+# get the latest feed at https://www.opendata-oepnv.de/ht/de/organisation/verkehrsverbuende/vvs/startseite?tx_vrrkit_view%5Bdataset_name%5D=soll-fahrplandaten-vvs&tx_vrrkit_view%5Bdataset_formats%5D%5B0%5D=ZIP&tx_vrrkit_view%5Baction%5D=details&tx_vrrkit_view%5Bcontroller%5D=View
+wget 'https://www.opendata-oepnv.de/dataset/d1768457-c717-45ea-8e26-dd1e759d5ffe/resource/ebc2eaae-9a03-4ace-8df7-28df10a80993/download/google_transit.zip' -O vvs.gtfs.zip
 unzip -d vvs-gtfs vvs.gtfs.zip
 
 # install generate-herrenberg-gtfs-flex
