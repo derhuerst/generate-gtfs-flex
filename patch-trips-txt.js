@@ -64,7 +64,7 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 	csv.pipe(process.stdout)
 
 	// pass through all trips, create Flex duplicates
-	for await (const t of readGtfsFile('trips')) {
+	for await (const t of await readGtfsFile('trips')) {
 		csv.write(t)
 
 		if (byRouteId.has(t.route_id)) {

@@ -22,7 +22,7 @@
 	"bugs": "https://github.com/derhuerst/generate-gtfs-flex/issues",
 	"license": "ISC",
 	"engines": {
-		"node": ">=14"
+		"node": ">=16"
 	},
 	"dependencies": {
 		"@turf/circle": "^6.5.0",
@@ -30,7 +30,7 @@
 		"ajv": "^8.6.1",
 		"csv-parser": "^3.0.0",
 		"csv-stringify": "^5.6.5",
-		"gtfs-utils": "^4.2.0",
+		"gtfs-utils": "^5.0.0",
 		"mri": "^1.1.6"
 	},
 	"devDependencies": {
