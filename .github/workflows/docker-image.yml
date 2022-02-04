@@ -23,7 +23,7 @@ jobs:
 
   build-and-publish:
     name: build & publish Docker image
-    needs: [test],
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - name: check out the repo
