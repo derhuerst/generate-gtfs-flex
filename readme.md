@@ -4,6 +4,8 @@ Given a [GTFS Static](https://gtfs.org/reference/static) feed, **add [GTFS Flex 
 
 [![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)](license.md)
 
+This tool has originally developed for [Stadtnavi Herrenberg](https://herrenberg.stadtnavi.de), but it is used by other projects as well.
+
 *Note:* In order to get the behaviour we want (pickup only at stops but flexible drop-off within 300m), **we currently don't follow the spec as intended**; See [#5](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues/5) and [#6](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/pull/6) for details.
 
 
@@ -18,9 +20,13 @@ docker pull derhuerst/generate-herrenberg-gtfs-flex
 
 ## Getting started
 
-The scripts in this repo are written to be used with any GTFS feed. But there's also a file [`herrenberg-flex-rules.js`](herrenberg-flex-rules.js), which specifies the on-demand lines in [Herrenberg, Germany](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)).
+The scripts in this repo are written to be used with any GTFS feed; They need a *rule file* that describes which GTFS Static routes to patch with GTFS Flex information.
 
-The following steps will demonstrate how to use the scripts with `herrenberg-flex-rules.js`, in order to patch the [VVS GTFS feed](https://www.openvvs.de/dataset/e66f03e4-79f2-41d0-90f1-166ca609e491) with GTFS-Flex data. You must have [Node.js](https://nodejs.org/) installed (which includes the [`npm` CLI](https://docs.npmjs.com/cli/v7)).
+In addition, there are *rule files* for some projects that use this tool:
+
+- [`stadtnavi-herrenberg-flex-rules.js`](stadtnavi-herrenberg-flex-rules.js) – specifies the on-demand lines in [Herrenberg, Germany](https://en.wikipedia.org/wiki/Herrenberg) (part of [VVS](https://www.vvs.de)), used by [Stadtnavi Herrenberg](https://herrenberg.stadtnavi.de).
+
+The following steps will demonstrate how to use `generate-herrenberg-gtfs-flex` with `stadtnavi-herrenberg-flex-rules.js`. You must have [Node.js](https://nodejs.org/) installed (which includes the [`npm` CLI](https://docs.npmjs.com/cli/v7)).
 
 ```bash
 # set up an empty npm project
@@ -38,23 +44,23 @@ npm install --save-dev derhuerst/generate-herrenberg-gtfs-flex
 
 # patch GTFS-Flex data into the VVS GTFS feed
 ./node_modules/.bin/generate-locations-geojson \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-herrenberg-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
 ./node_modules/.bin/generate-booking-rules-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-herrenberg-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
 ./node_modules/.bin/patch-trips-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-herrenberg-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/trips.txt
 ./node_modules/.bin/patch-routes-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-herrenberg-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	| sponge vvs-gtfs/routes.txt
 ./node_modules/.bin/patch-stop-times-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-herrenberg-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/stop_times.txt
 ```

@@ -1,6 +1,6 @@
 FROM node:alpine
 LABEL org.opencontainers.image.title="generate-herrenberg-gtfs-flex"
-LABEL org.opencontainers.image.description="Generate GTFS Flex for Herrenberg on-demand public transport service."
+LABEL org.opencontainers.image.description="Given a GTFS Static feed, add GTFS Flex v2 to model on-demand public transport service."
 LABEL org.opencontainers.image.authors="Jannis R <mail@jannisr.de>"
 LABEL org.opencontainers.image.documentation="https://github.com/derhuerst/generate-herrenberg-gtfs-flex"
 LABEL org.opencontainers.image.source="https://github.com/derhuerst/generate-herrenberg-gtfs-flex"

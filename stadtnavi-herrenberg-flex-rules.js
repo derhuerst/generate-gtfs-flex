@@ -1,5 +1,8 @@
 'use strict'
 
+// These are the GTFS-Flex patching rules used by Stadtnavi Herrenberg (https://herrenberg.stadtnavi.de).
+// see also https://github.com/mfdz/gtfs-hub/blob/d1338336ccecd884a727f7efe60fa4263513be6a/makefile#L105-L106
+
 const pickupTypes = require('gtfs-utils/pickup-types')
 const dropOffTypes = require('gtfs-utils/drop-off-types')
 const bookingTypes = require('gtfs-utils/booking-types')
