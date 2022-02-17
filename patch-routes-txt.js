@@ -34,11 +34,7 @@ const showError = (err) => {
 const {resolve} = require('path')
 const {Stringifier} = require('csv-stringify')
 const createReadGtfsFile = require('./lib/read-gtfs-files')
-// const addSeconds = require('./lib/add-seconds')
 const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
-// const {
-// 	generateFlexTripId: flexTripId,
-// } = require('./lib/ids')
 
 // https://developers.google.com/transit/gtfs/reference/extended-route-types
 const DEMAND_AND_RESPONSE_BUS = 715
