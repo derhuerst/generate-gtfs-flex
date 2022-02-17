@@ -154,7 +154,7 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 	const flexTrips = new Map()
 
 	// pass through all stop_times rows, but add booking rules & empty columns
-	for await (const st of readGtfsFile('stop_times')) {
+	for await (const st of await readGtfsFile('stop_times')) {
 		// Assume non-on-demand case first.
 		st.pickup_booking_rule_id = null
 		st.drop_off_booking_rule_id = null
@@ -163,7 +163,7 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 		st.timepoint = timepointTypes.EXACT
 
 		if (byTripId.has(st.trip_id)) {
-			const flexSpec = byTripId.get(st.trip_id)
+			const [flexSpec] = byTripId.get(st.trip_id)
 			patchStopTimeWithBookingRules(st, flexSpec)
 
 			if (!flexTrips.has(st.trip_id)) {
@@ -177,7 +177,7 @@ rufbusSpec ${specId} has a drop_off_type of ${drop_off_type}, but it is forbidde
 	}
 
 	for (let [originalTripId, stopTimes] of flexTrips.entries()) {
-		const flexSpec = byTripId.get(originalTripId)
+		const [flexSpec] = byTripId.get(originalTripId)
 		const flexTripId = genFlexTripId(originalTripId)
 
 		stopTimes = stopTimes

@@ -70,9 +70,13 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 	for (const [trip_id, spec] of byTripId) {
 		const {
 			id: specId,
-			radius,
 			stops,
 		} = spec
+
+		// skip flex specs without geographic buffer
+		if (!('radius' in spec)) continue
+		const radius = spec.radius
+
 		for (const s of stops) {
 			const locId = flexLocId(specId, s.stop_id)
 			if (printedLocs.has(locId)) continue

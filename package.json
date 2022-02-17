@@ -1,8 +1,8 @@
 {
 	"private": true,
-	"name": "generate-herrenberg-gtfs-flex",
+	"name": "generate-gtfs-flex",
 	"description": "Generate GTFS Flex for Herrenberg on-demand public transport service.",
-	"version": "3.0.1",
+	"version": "4.0.0",
 	"bin": {
 		"generate-locations-geojson": "gen-locations-geojson.js",
 		"generate-booking-rules-txt": "gen-booking-rules-txt.js",
@@ -17,12 +17,12 @@
 		"gtfs-flex"
 	],
 	"author": "Jannis R <mail@jannisr.de>",
-	"homepage": "https://github.com/derhuerst/generate-herrenberg-gtfs-flex",
-	"repository": "derhuerst/generate-herrenberg-gtfs-flex",
-	"bugs": "https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues",
+	"homepage": "https://github.com/derhuerst/generate-gtfs-flex",
+	"repository": "derhuerst/generate-gtfs-flex",
+	"bugs": "https://github.com/derhuerst/generate-gtfs-flex/issues",
 	"license": "ISC",
 	"engines": {
-		"node": ">=14"
+		"node": ">=16"
 	},
 	"dependencies": {
 		"@turf/circle": "^6.5.0",
@@ -30,7 +30,7 @@
 		"ajv": "^8.6.1",
 		"csv-parser": "^3.0.0",
 		"csv-stringify": "^5.6.5",
-		"gtfs-utils": "^4.2.0",
+		"gtfs-utils": "^5.0.0",
 		"mri": "^1.1.6"
 	},
 	"devDependencies": {
