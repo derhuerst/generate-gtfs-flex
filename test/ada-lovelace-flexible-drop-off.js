@@ -4,7 +4,7 @@ const pickupTypes = require('gtfs-utils/pickup-types')
 const dropOffTypes = require('gtfs-utils/drop-off-types')
 const bookingTypes = require('gtfs-utils/booking-types')
 
-const adaLovelaceFlexibleDropOff = (route) => {
+const adaLovelaceFlexibleDropOff = (trip, route) => {
 	if (route.route_id !== 'A') return null // leave route unchanged
 	return {
 		id: 'A-flexible-drop-off', // ID of the GTFS-Flex spec

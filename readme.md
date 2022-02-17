@@ -49,7 +49,7 @@ npm install --save-dev derhuerst/generate-gtfs-flex
 	>vvs-gtfs/locations.geojson
 ./node_modules/.bin/generate-booking-rules-txt \
 	node_modules/generate-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
-	vvs-gtfs/routes.txt \
+	vvs-gtfs/{routes,trips}.txt \
 	>vvs-gtfs/booking_rules.txt
 ./node_modules/.bin/patch-trips-txt \
 	node_modules/generate-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
@@ -57,7 +57,7 @@ npm install --save-dev derhuerst/generate-gtfs-flex
 	| sponge vvs-gtfs/trips.txt
 ./node_modules/.bin/patch-routes-txt \
 	node_modules/generate-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
-	vvs-gtfs/routes.txt \
+	vvs-gtfs/{routes,trips}.txt \
 	| sponge vvs-gtfs/routes.txt
 ./node_modules/.bin/patch-stop-times-txt \
 	node_modules/generate-gtfs-flex/stadtnavi-herrenberg-flex-rules.js \
@@ -184,10 +184,10 @@ cp -r node_modules/sample-gtfs-feed/gtfs gtfs
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	>gtfs/locations.geojson
 ./node_modules/.bin/generate-booking-rules-txt \
-	flex-rules.js gtfs/routes.txt \
+	flex-rules.js gtfs/{routes,trips}.txt \
 	>gtfs/booking_rules.txt
 ./node_modules/.bin/patch-routes-txt \
-	flex-rules.js gtfs/routes.txt \
+	flex-rules.js gtfs/{routes,trips}.txt \
 	| sponge gtfs/routes.txt
 ./node_modules/.bin/patch-trips-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \

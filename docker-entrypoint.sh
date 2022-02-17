@@ -36,6 +36,6 @@ set -x
 
 generate-booking-rules-txt "$rules_file" *.txt | tee booking_rules.txt | wc -l
 generate-locations-geojson "$rules_file" *.txt | tee locations.geojson | wc -l
-patch-routes-txt "$rules_file" routes.txt | sponge routes.txt
+patch-routes-txt "$rules_file" {routes,trips}.txt | sponge routes.txt
 patch-trips-txt "$rules_file" *.txt | sponge trips.txt
 patch-stop-times-txt "$rules_file" *.txt | sponge stop_times.txt

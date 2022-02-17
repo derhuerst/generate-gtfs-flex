@@ -35,7 +35,7 @@ const {resolve} = require('path')
 const {Stringifier} = require('csv-stringify')
 const createReadGtfsFile = require('./lib/read-gtfs-files')
 // const addSeconds = require('./lib/add-seconds')
-const {computeFlexSpecsByRouteId} = require('./lib/flex-specs-by-trip-id')
+const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
 // const {
 // 	generateFlexTripId: flexTripId,
 // } = require('./lib/ids')
@@ -53,7 +53,11 @@ const requiredGtfsFiles = [
 const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 ;(async () => {
-	const byRouteId = await computeFlexSpecsByRouteId(flexRules, readGtfsFile)
+	const byTripId = await computeFlexSpecsByTripId(flexRules, readGtfsFile)
+	const routeIdsWithFlexSpecs = new Set()
+	for (const [tripId, [flexSpec, route]] of byTripId.entries()) {
+		routeIdsWithFlexSpecs.add(route.route_id)
+	}
 
 	const csv = new Stringifier({
 		quoted: true,
@@ -63,7 +67,7 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 	// pass through all routes, patch Flex routes as on-demand
 	for await (const t of await readGtfsFile('routes')) {
-		if (byRouteId.has(t.route_id)) {
+		if (routeIdsWithFlexSpecs.has(t.route_id)) {
 			t.route_type = DEMAND_AND_RESPONSE_BUS
 		}
 		csv.write(t)

@@ -39,7 +39,7 @@ const dropOffTypes = require('gtfs-utils/drop-off-types')
 const {Stringifier} = require('csv-stringify')
 const createReadGtfsFile = require('./lib/read-gtfs-files')
 const addSeconds = require('./lib/add-seconds')
-const {computeFlexSpecsByRouteId} = require('./lib/flex-specs-by-trip-id')
+const {computeFlexSpecsByTripId} = require('./lib/flex-specs-by-trip-id')
 const {
 	generateFlexTripId: flexTripId,
 } = require('./lib/ids')
@@ -55,7 +55,7 @@ const requiredGtfsFiles = [
 const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 
 ;(async () => {
-	const byRouteId = await computeFlexSpecsByRouteId(flexRules, readGtfsFile)
+	const byTripId = await computeFlexSpecsByTripId(flexRules, readGtfsFile)
 
 	const csv = new Stringifier({
 		quoted: true,
@@ -67,7 +67,7 @@ const readGtfsFile = createReadGtfsFile(requiredGtfsFiles, argv._.slice(1))
 	for await (const t of await readGtfsFile('trips')) {
 		csv.write(t)
 
-		if (byRouteId.has(t.route_id)) {
+		if (byTripId.has(t.trip_id)) {
 			// Flex/on-demand case, duplicate trip
 			const t2 = {
 				...t,

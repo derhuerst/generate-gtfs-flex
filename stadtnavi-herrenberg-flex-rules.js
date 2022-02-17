@@ -25,7 +25,7 @@ Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle. Aufpreis 0,
 	},
 }
 const herrenbergCitybusRoutes = ['RT779', 'RT780', 'RT782', 'RT783']
-const herrenbergCitybus = (origRoute) => (
+const herrenbergCitybus = (origTrip, origRoute) => (
 	herrenbergCitybusRoutes.includes(origRoute.route_short_name)
 		? herrenbergCitybusFlex
 		: null
@@ -50,7 +50,7 @@ Haustürbeförderung beim Absetzen. Aufpreis 0,80€.`,
 	},
 }
 const regionalbusRoutes = ['RT753', 'RT773', 'RT775', 'RT791', 'RT794']
-const regionalbus = (origRoute) => (
+const regionalbus = (origTrip, origRoute) => (
 	// todo: add line-specific contact details
 	// todo: do all of these have drop-off at home?
 	regionalbusRoutes.includes(origRoute.route_short_name)
