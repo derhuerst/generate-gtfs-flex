@@ -39,3 +39,4 @@ jobs:
           push: true
           tags: |
             derhuerst/generate-gtfs-flex:latest
+            derhuerst/generate-gtfs-flex:4
