@@ -18,7 +18,7 @@ Anmeldung bis 60min vor Abfahrt.`,
 		drop_off_message: `\
 Haustürbedienung beim Absetzen 300m (Luftlinie) um die Haltestelle. Aufpreis 0,80€ direkt an den Taxi-Fahrer.`,
 		phone_number: '+49 7032 92029',
-		info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
+		info_url: 'https://stadtwerke.herrenberg.de/gaumobil/oepnv/',
 	},
 }
 const herrenbergCitybusRoutes = ['RT779', 'RT780', 'RT782', 'RT783']
@@ -43,7 +43,7 @@ Anmeldung bis 60min vor Abfahrt.`,
 		drop_off_message: `\
 Haustürbeförderung beim Absetzen. Aufpreis 0,80€.`,
 		phone_number: '+49 7032 95 97 37',
-		info_url: 'https://stadtwerke.herrenberg.de/oepnv-parken/oepnv/weitere-informationen/',
+		info_url: 'https://stadtwerke.herrenberg.de/gaumobil/oepnv/',
 	},
 }
 const regionalbusRoutes = ['RT753', 'RT773', 'RT775', 'RT791', 'RT794']
