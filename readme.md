@@ -12,7 +12,7 @@ Given a [GTFS Static](https://gtfs.org/reference/static) feed, **add [GTFS Flex 
 ```shell
 npm install derhuerst/generate-gtfs-flex
 # or
-docker pull derhuerst/generate-gtfs-flex
+docker pull docker.io/derhuerst/generate-gtfs-flex
 ```
 
 
@@ -37,23 +37,23 @@ unzip -d vvs-gtfs vvs.gtfs.zip
 npm install --save-dev derhuerst/generate-gtfs-flex
 
 # patch GTFS-Flex data into the VVS GTFS feed
-./node_modules/.bin/generate-locations-geojson \
+npm exec --offline generate-locations-geojson \
 	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
-./node_modules/.bin/generate-booking-rules-txt \
+npm exec --offline generate-booking-rules-txt \
 	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
-./node_modules/.bin/patch-trips-txt \
+npm exec --offline patch-trips-txt \
 	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/trips.txt
-./node_modules/.bin/patch-routes-txt \
+npm exec --offline patch-routes-txt \
 	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	| sponge vvs-gtfs/routes.txt
-./node_modules/.bin/patch-stop-times-txt \
+npm exec --offline patch-stop-times-txt \
 	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/stop_times.txt
@@ -106,10 +106,10 @@ Examples:
 
 ### with Docker
 
-You can use the [`derhuerst/generate-gtfs-flex` Docker image](https://hub.docker.com/r/docker.io/derhuerst/generate-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
+You can use the [`docker.io/derhuerst/generate-gtfs-flex` Docker image](https://hub.docker.com/r/docker.io/derhuerst/generate-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
 
 ```shell
-docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-gtfs-flex
+docker run -v /path/to/gtfs:/gtfs --rm -it docker.io/derhuerst/generate-gtfs-flex
 ```
 
 **⚠️ This will overwrite the original `routes.txt`, `trips.txt` & `stop_times.txt` files.**
@@ -161,21 +161,22 @@ We can now patch the GTFS-Flex *rules* into `sample-gtfs-feed`'s GTFS feed:
 
 ```shell
 # copy the GTFS feed first, so that we don't mutate node_modules
+# Note: You can benefit from copy-on-write using `-c` (BSD/macOS) or `--reflink=auto` (GNU/Linux).
 cp -r node_modules/sample-gtfs-feed/gtfs gtfs
 
-./node_modules/.bin/generate-locations-geojson \
+npm exec --offline generate-locations-geojson \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	>gtfs/locations.geojson
-./node_modules/.bin/generate-booking-rules-txt \
+npm exec --offline generate-booking-rules-txt \
 	flex-rules.js gtfs/routes.txt \
 	>gtfs/booking_rules.txt
-./node_modules/.bin/patch-routes-txt \
+npm exec --offline patch-routes-txt \
 	flex-rules.js gtfs/routes.txt \
 	| sponge gtfs/routes.txt
-./node_modules/.bin/patch-trips-txt \
+npm exec --offline patch-trips-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge gtfs/trips.txt
-./node_modules/.bin/patch-stop-times-txt \
+npm exec --offline patch-stop-times-txt \
 	flex-rules.js gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge gtfs/stop_times.txt
 ```
