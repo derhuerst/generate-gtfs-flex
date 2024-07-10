@@ -1,18 +1,18 @@
-# generate-herrenberg-gtfs-flex
+# generate-gtfs-flex
 
 Given a [GTFS Static](https://gtfs.org/reference/static) feed, **add [GTFS Flex v2](https://github.com/MobilityData/gtfs-flex/blob/e1832cfea5ddb9df29bd2fc50e80b0a4987695c1/spec/reference.md) to model on-demand public transport service.**
 
-[![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-herrenberg-gtfs-flex.svg)](license.md)
+[![ISC-licensed](https://img.shields.io/github/license/derhuerst/generate-gtfs-flex.svg)](license.md)
 
-*Note:* In order to get the behaviour we want (pickup only at stops but flexible drop-off within 300m), **we currently don't follow the spec as intended**; See [#5](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues/5) and [#6](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/pull/6) for details.
+*Note:* In order to get the behaviour we want (pickup only at stops but flexible drop-off within 300m), **we currently don't follow the spec as intended**; See [#5](https://github.com/derhuerst/generate-gtfs-flex/issues/5) and [#6](https://github.com/derhuerst/generate-gtfs-flex/pull/6) for details.
 
 
 ## Installation
 
 ```shell
-npm install derhuerst/generate-herrenberg-gtfs-flex
+npm install derhuerst/generate-gtfs-flex
 # or
-docker pull derhuerst/generate-herrenberg-gtfs-flex
+docker pull derhuerst/generate-gtfs-flex
 ```
 
 
@@ -33,33 +33,33 @@ npm init --yes
 wget 'https://www.opendata-oepnv.de/dataset/d1768457-c717-45ea-8e26-dd1e759d5ffe/resource/ebc2eaae-9a03-4ace-8df7-28df10a80993/download/google_transit.zip' -O vvs.gtfs.zip
 unzip -d vvs-gtfs vvs.gtfs.zip
 
-# install generate-herrenberg-gtfs-flex as a development dependency
-npm install --save-dev derhuerst/generate-herrenberg-gtfs-flex
+# install generate-gtfs-flex as a development dependency
+npm install --save-dev derhuerst/generate-gtfs-flex
 
 # patch GTFS-Flex data into the VVS GTFS feed
 ./node_modules/.bin/generate-locations-geojson \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	>vvs-gtfs/locations.geojson
 ./node_modules/.bin/generate-booking-rules-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	>vvs-gtfs/booking_rules.txt
 ./node_modules/.bin/patch-trips-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/trips.txt
 ./node_modules/.bin/patch-routes-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/routes.txt \
 	| sponge vvs-gtfs/routes.txt
 ./node_modules/.bin/patch-stop-times-txt \
-	node_modules/generate-herrenberg-gtfs-flex/herrenberg-flex-rules.js \
+	node_modules/generate-gtfs-flex/herrenberg-flex-rules.js \
 	vvs-gtfs/{routes,trips,stops,stop_times}.txt \
 	| sponge vvs-gtfs/stop_times.txt
 ```
 
-*pro tip:* If you install the package globally (via `npm install derhuerst/generate-herrenberg-gtfs-flex -g`), npm will put the scripts into your [`$PATH`](https://en.wikipedia.org/wiki/PATH_(variable)), so instead of running `./node_modules/.bin/…`, you'll be able to just use them as documented below.
+*pro tip:* If you install the package globally (via `npm install derhuerst/generate-gtfs-flex -g`), npm will put the scripts into your [`$PATH`](https://en.wikipedia.org/wiki/PATH_(variable)), so instead of running `./node_modules/.bin/…`, you'll be able to just use them as documented below.
 
 
 ## Usage
@@ -102,14 +102,14 @@ Examples:
         gtfs/{routes,trips,stops,stop_times}.txt >gtfs/stop_times.patched.txt
 ```
 
-*Note:* Currently, `generate-herrenberg-gtfs-flex` inserts all trips & `stop_times` rows affected by any of the rules *twice*: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
+*Note:* Currently, `generate-gtfs-flex` inserts all trips & `stop_times` rows affected by any of the rules *twice*: One on-demand trip stopping directly at the stops, one trip stopping at Flex areas.
 
 ### with Docker
 
-You can use the [`derhuerst/generate-herrenberg-gtfs-flex` Docker image](https://hub.docker.com/r/derhuerst/generate-herrenberg-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
+You can use the [`derhuerst/generate-gtfs-flex` Docker image](https://hub.docker.com/r/docker.io/derhuerst/generate-gtfs-flex). It will call the tools documented above on a GTFS feed that you mount into the container:
 
 ```shell
-docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-flex
+docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-gtfs-flex
 ```
 
 **⚠️ This will overwrite the original `routes.txt`, `trips.txt` & `stop_times.txt` files.**
@@ -120,11 +120,11 @@ docker run -v /path/to/gtfs:/gtfs --rm -it derhuerst/generate-herrenberg-gtfs-fl
 You can use the scripts in this repo with *any* GTFS feed. As an example, we're going to patch [`sample-gtfs-feed`](https://github.com/public-transport/sample-gtfs-feed)'s `A` ("Ada Lovelace Bus Line") route to have flexible on-demand drop-offs.
 
 ```shell
-# as above, initialise an empty npm project & install generate-herrenberg-gtfs-flex
+# as above, initialise an empty npm project & install generate-gtfs-flex
 mkdir sample-gtfs-feed-with-flex
 cd sample-gtfs-feed-with-flex
 npm init --yes
-npm install --save-dev sample-gtfs-feed derhuerst/generate-herrenberg-gtfs-flex
+npm install --save-dev sample-gtfs-feed derhuerst/generate-gtfs-flex
 ```
 
 We're going to write a file `flex-rules.js` that exports a list of GTFS-Flex *rules*. Each of these rules is a function that must, when given a `routes.txt` entry/row, return either `null` to leave it unchanged or return a GTFS-Flex *spec* (check out [the schema](lib/flex-spec-schema.json)) to patch it:
@@ -183,4 +183,4 @@ cp -r node_modules/sample-gtfs-feed/gtfs gtfs
 
 ## Contributing
 
-If you have a question or need support using `generate-herrenberg-gtfs-flex`, please double-check your code and setup first. If you think you have found a bug or want to propose a feature, use [the issues page](https://github.com/derhuerst/generate-herrenberg-gtfs-flex/issues).
+If you have a question or need support using `generate-gtfs-flex`, please double-check your code and setup first. If you think you have found a bug or want to propose a feature, use [the issues page](https://github.com/derhuerst/generate-gtfs-flex/issues).
