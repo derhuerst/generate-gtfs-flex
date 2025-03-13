@@ -1,25 +1,14 @@
 name: build & publish Docker image
+
 on:
   push:
     branches:
       - main
+
 jobs:
   test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: ['14', '16']
-    steps:
-    - name: checkout
-      uses: actions/checkout@v2
-    - name: setup Node v${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-
-    - run: npm run lint
-    - run: npm test
+    name: lint & test
+    uses: './.github/workflows/test.yml'
 
   build-and-publish:
     name: build & publish Docker image
